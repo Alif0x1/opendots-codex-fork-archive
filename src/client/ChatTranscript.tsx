@@ -1,3 +1,4 @@
+import { openPageLink } from './page-navigation';
 import { Fragment } from 'react';
 import { PhoneOff } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
@@ -42,7 +43,19 @@ export function ChatTranscript({
               components={{
                 img: ({ alt }) => <span>{alt}</span>,
                 a: ({ href, children }) => (
-                  <a href={href} target="_blank" rel="noreferrer">
+                  <a
+                    onClick={(event) => {
+                      if (href?.startsWith('/#/spaces/')) {
+                        event.preventDefault();
+                        openPageLink(href);
+                      }
+                    }}
+                    href={href}
+                    target={
+                      href?.startsWith('/#/spaces/') ? undefined : '_blank'
+                    }
+                    rel="noreferrer"
+                  >
                     {children}
                   </a>
                 ),

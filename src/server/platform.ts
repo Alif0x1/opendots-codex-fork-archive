@@ -1,3 +1,4 @@
+import { PageService } from './page-service.js';
 import { randomUUID } from 'node:crypto';
 import {
   CopilotKitIntelligence,
@@ -29,6 +30,7 @@ export function slackIdentity(
   return { id: ownerId, name: 'OpenDots owner' };
 }
 export class Platform {
+  readonly pages: PageService;
   readonly intelligence?: CopilotKitIntelligence;
   readonly handler?: CopilotHonoApp;
   constructor(
@@ -36,6 +38,10 @@ export class Platform {
     readonly workspace: WorkspaceStore,
     readonly config: PlatformConfig,
   ) {
+    this.pages = new PageService(workspace, () => {
+      this.requireReady();
+      return this.intelligence!;
+    });
     if (!config.intelligenceKey) return;
     this.intelligence = new CopilotKitIntelligence({
       apiKey: config.intelligenceKey,

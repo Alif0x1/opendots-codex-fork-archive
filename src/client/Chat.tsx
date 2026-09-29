@@ -1,6 +1,9 @@
+import { api } from './api';
+import type { Page } from '../server/pages';
 import { useEffect, useRef, useState } from 'react';
 import { useAgent, useCopilotKit } from '@copilotkit/react-core/v2';
 import {
+  FilePlus,
   ArrowUp,
   Clock3,
   Link2,
@@ -40,6 +43,25 @@ export function Chat({
     threadId: thread.id,
   });
   const { copilotkit } = useCopilotKit();
+  const [pageContext, setPageContext] = useState<Pick<
+    Page,
+    'id' | 'spaceId' | 'title'
+  > | null>(null);
+  useEffect(() => {
+    let active = true;
+    void api<Pick<Page, 'id' | 'spaceId' | 'title'> | null>(
+      `/conversations/${thread.id}/page-context`,
+    )
+      .then((page) => {
+        if (active) setPageContext(page);
+      })
+      .catch((e) => {
+        if (active) setError(e.message);
+      });
+    return () => {
+      active = false;
+    };
+  }, [thread.id]);
   const [draft, setDraft] = useState('');
   const [source, setSource] = useState('');
   const [sourceOpen, setSourceOpen] = useState(false);
@@ -83,7 +105,14 @@ export function Chat({
     if (!text.trim() || running || !loaded || paused) return;
     setError('');
     setRunning(true);
-    agent.addMessage({ id: crypto.randomUUID(), role: 'user', content: text });
+    const pagePrefix = pageContext
+      ? `From [${pageContext.title.replace(/[[\]\\]/g, '')}](/#/spaces/${pageContext.spaceId}/pages/${pageContext.id}):\n\n`
+      : '';
+    agent.addMessage({
+      id: crypto.randomUUID(),
+      role: 'user',
+      content: pagePrefix + text,
+    });
     setDraft('');
     setSource('');
     setSourceOpen(false);
@@ -145,6 +174,31 @@ export function Chat({
         <div className="chat-persona-actions">
           <button
             className="icon-button"
+            aria-label="Save conversation as page"
+            disabled={running}
+            onClick={async () => {
+              const title = window.prompt('Page title', thread.title);
+              if (!title) return;
+              try {
+                const page = await api<Page>(
+                  `/conversations/${thread.id}/page`,
+                  'POST',
+                  { title },
+                );
+                location.hash = `/spaces/${page.spaceId}/pages/${page.id}`;
+              } catch (e) {
+                setError(
+                  e instanceof Error
+                    ? e.message
+                    : 'Could not save conversation.',
+                );
+              }
+            }}
+          >
+            <FilePlus size={18} />
+          </button>
+          <button
+            className="icon-button"
             aria-label="Schedule a task in this conversation"
             onClick={onSchedule}
           >
@@ -173,6 +227,14 @@ export function Chat({
           </button>
         </div>
       </header>
+      {pageContext && (
+        <div className="page-chat-context">
+          Working on{' '}
+          <a href={`/#/spaces/${pageContext.spaceId}/pages/${pageContext.id}`}>
+            {pageContext.title}
+          </a>
+        </div>
+      )}
       <div className="chat-transcript">
         {!visible.length && (
           <div className="chat-welcome">

@@ -1,6 +1,6 @@
 # Running the template
 
-OpenDots runs a React app and a Node server. The server stores Space and Dot configuration in SQLite and connects to your configured conversation, model, and messaging services.
+OpenDots runs a React app and a Node server. The server stores pages, Space and Dot configuration, and thread bindings in SQLite and connects to your configured conversation, model, and messaging services.
 
 ## Local development
 
@@ -27,18 +27,28 @@ Open http://127.0.0.1:4310. Keep the server running for background work.
 
 Edit `.env` on the server and restart after changes:
 
-| Variable                                      | Purpose                                                  |
-| --------------------------------------------- | -------------------------------------------------------- |
-| `INTELLIGENCE_API_KEY`                        | Project credential for conversation persistence          |
-| `INTELLIGENCE_API_URL`, `INTELLIGENCE_WS_URL` | Endpoint overrides for your Intelligence deployment      |
-| `OPENAI_API_KEY`, `OPENAI_MODEL`              | Model credential and model identifier                    |
-| `OPENAI_BASE_URL`                             | Compatible model API endpoint                            |
-| `OWNER_ID`                                    | Stable identity used for this deployment's conversations |
-| `DATABASE_PATH`                               | SQLite file containing workspace and work metadata       |
-| `OWNER_TOKEN`                                 | Application access token; required for external bindings |
-| `APP_ORIGIN`                                  | Exact browser origin when using a proxy or custom domain |
+| Variable                                      | Purpose                                                   |
+| --------------------------------------------- | --------------------------------------------------------- |
+| `INTELLIGENCE_API_KEY`                        | Project credential for conversation persistence           |
+| `INTELLIGENCE_API_URL`, `INTELLIGENCE_WS_URL` | Endpoint overrides for your Intelligence deployment       |
+| `OPENAI_API_KEY`, `OPENAI_MODEL`              | Model credential and model identifier                     |
+| `OPENAI_BASE_URL`                             | Compatible model API endpoint                             |
+| `OWNER_ID`                                    | Stable identity used for this deployment's conversations  |
+| `DATABASE_PATH`                               | SQLite file containing pages, workspace and work metadata |
+| `OWNER_TOKEN`                                 | Application access token; required for external bindings  |
+| `APP_ORIGIN`                                  | Exact browser origin when using a proxy or custom domain  |
 
 The model environment variable names follow the configured provider adapter. Provider credentials belong in `.env`, not client-side variables or source code. Conversation history lives in the configured Intelligence project; copying the SQLite file alone does not back up that history.
+
+## Pages and page conversations
+
+Select a Space to open its document workspace. Create a page or subpage, edit its title and Markdown, preview the result, and save. Pages can move under another page in the same Space. Manual editing works without conversation credentials.
+
+Open a page's chat and choose a specialist from that Space. The server creates or reuses a CopilotKit Thread for that page and specialist. The Dot receives the current saved page as context and can read, create, and edit pages in its own Space. Save your manual edits before asking it to revise the document. Revision checks reject stale writes; a conflict keeps your local draft available for recovery.
+
+Use the conversation's save-to-page action to create a document from its saved text history. This requires a working conversation service. Pages retain a link to the source conversation, and page links in chat open the document workspace.
+
+Back up both storage layers: SQLite contains page content and thread bindings; the Intelligence project contains conversation history. The template does not include multi-user page sharing, realtime collaboration, file uploads, or arbitrary interactive embeds.
 
 ## Browser tool
 

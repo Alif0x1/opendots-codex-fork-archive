@@ -1,3 +1,4 @@
+import { pageRoutes } from './page-routes.js';
 import { Hono } from 'hono';
 import { z } from 'zod';
 import { Platform } from './platform.js';
@@ -12,6 +13,7 @@ const dotSchema = z
   .strict();
 export function workspaceRoutes(platform: Platform, voice: VoiceService) {
   const app = new Hono();
+  app.route('/', pageRoutes(platform));
   app.get('/workspace', (c) =>
     c.json({
       spaces: platform.workspace.spaces(),

@@ -26,7 +26,13 @@ OpenDots is a starting point for building your own agent workspace. Clone it, de
 
 ### Spaces
 
-Group related Dots, conversations, sources, and results in a Space. Keep each area of work organized without losing the context of its conversations.
+A Space is a home for working documents and the Dots that help with them. Create editable Markdown pages, organize them as nested subpages, and open a page alongside its conversation. Write directly, save a conversation as a page, or ask a specialist to create and revise content.
+
+Pages stay in the local workspace database. Their conversations use CopilotKit Threads, with a separate conversation for each page and specialist. Page links connect the document workspace to Dot chat. Manual editing works before you configure conversation services; revision checks prevent a stale save from overwriting newer content.
+
+![Spaces document workspace](docs/images/spaces-workspace.png)
+
+_Local workspace with example pages created through the application. Page chat awaits service setup._
 
 ### Specialist Dots
 
@@ -44,11 +50,11 @@ Message a Dot through a managed Slack connection using Channels SDK. Explicit id
 
 ## Architecture
 
-The template uses CopilotKit's React SDK and runtime, Intelligence for durable Threads, and Channels SDK for Slack. Application metadata and background-work state are stored separately from conversation history.
+The template uses CopilotKit's React SDK and runtime, Intelligence for durable Threads, and Channels SDK for Slack. Pages, application metadata, and background-work state are stored separately from conversation history.
 
 ```mermaid
 flowchart TB
-  Web["Web app: Spaces, Dots, chat"] --> Runtime[CopilotKit runtime]
+  Web["Web app: pages, Spaces, Dots, chat"] --> Runtime[CopilotKit runtime]
   Slack[Slack] <--> Managed[Managed channel connection]
   Managed <--> Channels[Channels SDK]
   Channels --> Agents[Specialist compute agents]
@@ -61,7 +67,7 @@ flowchart TB
   Agents --> Controls[Tool permissions]
   Controls --> Computer[Isolated browser / workspace]
   Agents --> Jobs[Background work]
-  Runtime --> Metadata[(Spaces, Dots, work metadata)]
+  Runtime --> Metadata[(Pages, Spaces, Dots, work metadata)]
 ```
 
 You configure the Intelligence project, model provider, and channel connection for your deployment; calls also need a speech provider. Credentials stay on the server. Missing configuration should produce a clear setup state, and test fixtures should remain visibly separate from live integrations.
@@ -80,7 +86,7 @@ cp .env.example .env
 npm run dev
 ```
 
-Open **http://127.0.0.1:5173**. You can create Spaces and configure Dots before connecting services. Add your conversation and model settings to `.env` to start chatting.
+Open **http://127.0.0.1:5173**. You can create Spaces, write pages, and configure Dots before connecting services. Add your conversation and model settings to `.env` to start chatting.
 
 See [Setup](docs/SETUP.md) for configuration, Slack, calls, the browser service, and Docker.
 
@@ -89,7 +95,8 @@ See [Setup](docs/SETUP.md) for configuration, Slack, calls, the browser service,
 | Area                       | Included                                                                                  |
 | -------------------------- | ----------------------------------------------------------------------------------------- |
 | Spaces and Specialist Dots | Saved names, role instructions, and per-Dot research and memory permissions               |
-| Conversations              | React SDK chat and Threads integration, source links, and visible runtime errors          |
+| Pages                      | Nested Markdown documents, direct editing, conversation export, and revision checks       |
+| Conversations              | React SDK chat and Threads integration, page-specific conversations, and source links     |
 | Slack                      | Managed Channels SDK declaration with workspace and user allowlists                       |
 | Calls                      | WebRTC speech, delegated compute, bounded sessions, hangup, and timeline receipts         |
 | Background work            | Scheduled server-side turns in their original conversation, with pause and retry controls |
@@ -99,11 +106,12 @@ See [Setup](docs/SETUP.md) for configuration, Slack, calls, the browser service,
 
 Local checks cover setup, persistence, permissions, SDK failure handling, and browser isolation. Tests use service fixtures; **live Intelligence, model, Slack, and voice verification remains pending deployment configuration**.
 
-This is a single-owner starting point. Schedules are recurring instructions, not a complete goal or event-trigger system. Specialist Dots have separate roles and conversations; multi-Dot group conversations and automatic delegation are further work.
+This is a single-owner starting point. Shared editing, invitations, file uploads, and interactive page embeds are not included. Schedules are recurring instructions, not a complete goal or event-trigger system. Specialist Dots have separate roles and conversations; multi-Dot group conversations and automatic delegation are further work.
 
 ### Extending the template
 
-- Add identity and Space membership for multi-user deployments.
+- Add identity, Space membership, and shared page editing for multi-user deployments.
+- Add file attachments and richer page content.
 - Add event triggers and a persistent responsibility lifecycle.
 - Extend tools and approval flows for your own workflows.
 - Add richer artifacts, connected-app context, and specialist coordination.

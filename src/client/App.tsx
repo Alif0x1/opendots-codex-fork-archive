@@ -1,4 +1,6 @@
-import { useCallback, useEffect, useState } from 'react';
+import { openPageLink } from './page-navigation';
+import { SpaceWorkspace } from './SpaceWorkspace';
+import { useCallback, useEffect, useState, useRef } from 'react';
 import { CopilotKitProvider } from '@copilotkit/react-core/v2';
 import {
   ArrowUp,
@@ -42,7 +44,51 @@ export function App() {
   const [workspace, setWorkspace] = useState<WorkspaceState>();
   const [selectedDot, setSelectedDot] = useState('');
   const [selectedThread, setSelectedThread] = useState<string>();
-  const [view, setView] = useState<'chat' | 'tasks' | 'memories'>('chat');
+  const [view, rawSetView] = useState<'chat' | 'tasks' | 'memories' | 'space'>(
+    'chat',
+  );
+  const dirtyPage = useRef(false);
+  const [spaceId, setSpaceId] = useState('');
+  const [pageId, setPageId] = useState<string>();
+  const setDirtyPage = useCallback((value: boolean) => {
+    dirtyPage.current = value;
+  }, []);
+  const setView = (next: typeof view) => {
+    if (dirtyPage.current && !window.confirm('Leave your unsaved page draft?'))
+      return;
+    dirtyPage.current = false;
+    rawSetView(next);
+  };
+  useEffect(() => {
+    let acceptedHash = location.hash;
+    const navigate = () => {
+      const match = location.hash.match(
+        /^#\/spaces\/([^/]+)(?:\/pages\/([^/]+))?$/,
+      );
+      if (!match) return;
+      if (dirtyPage.current && location.hash === acceptedHash) return;
+      if (
+        dirtyPage.current &&
+        !window.confirm('Leave your unsaved page draft?')
+      ) {
+        history.replaceState(null, '', acceptedHash || location.pathname);
+        return;
+      }
+      acceptedHash = location.hash;
+      dirtyPage.current = false;
+      setSpaceId(match[1]);
+      setPageId(match[2]);
+      rawSetView('space');
+      setMobile(false);
+    };
+    navigate();
+    window.addEventListener('hashchange', navigate);
+    return () => window.removeEventListener('hashchange', navigate);
+  }, []);
+  const openPage = (space: string, page?: string) => {
+    openPageLink(`#/spaces/${space}${page ? `/pages/${page}` : ''}`);
+  };
+
   const [error, setError] = useState('');
   const [auth, setAuth] = useState('');
   const [needsAuth, setNeedsAuth] = useState(false);
@@ -261,7 +307,12 @@ export function App() {
             <div className="space-group" key={space.id}>
               <div className="space-title">
                 <Folder size={14} />
-                <span>{space.name}</span>
+                <button
+                  className="space-open"
+                  onClick={() => openPage(space.id)}
+                >
+                  {space.name}
+                </button>
                 <button
                   className="icon-button"
                   aria-label={`Create specialist Dot in ${space.name}`}
@@ -355,7 +406,12 @@ export function App() {
         <header className="topbar">
           <div className="breadcrumbs">
             <span>
-              {workspace.spaces.find((space) => space.id === dot.spaceId)?.name}
+              {
+                workspace.spaces.find(
+                  (space) =>
+                    space.id === (view === 'space' ? spaceId : dot.spaceId),
+                )?.name
+              }
             </span>
             <span>/</span>
             <strong>
@@ -363,7 +419,9 @@ export function App() {
                 ? dot.name
                 : view === 'tasks'
                   ? 'Activity'
-                  : 'Memories'}
+                  : view === 'space'
+                    ? 'Pages'
+                    : 'Memories'}
             </strong>
           </div>
           <div className="top-actions">
@@ -410,7 +468,30 @@ export function App() {
             All Dots are paused. Active compute stops and scheduled tasks wait.
           </div>
         )}
-        {view === 'chat' ? (
+        {view === 'space' ? (
+          <SpaceWorkspace
+            key={spaceId}
+            space={
+              workspace.spaces.find((s) => s.id === spaceId) ??
+              workspace.spaces[0]
+            }
+            pageId={pageId}
+            workspace={workspace}
+            paused={state.settings.paused}
+            onPage={(id) => openPage(spaceId, id)}
+            onDirty={setDirtyPage}
+            onRefresh={refresh}
+            onSchedule={(threadId) => setDialog({ type: 'schedule', threadId })}
+            onThread={(id) => {
+              const target = workspace.conversations.find((t) => t.id === id);
+              if (target) {
+                setView('chat');
+                setSelectedDot(target.dotId);
+                setSelectedThread(id);
+              }
+            }}
+          />
+        ) : view === 'chat' ? (
           <div className={`chat-workspace ${pane ? 'split' : ''}`}>
             <div className="chat-column">
               {thread && configured ? (

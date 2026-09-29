@@ -15,6 +15,7 @@ import {
   Monitor,
   MoreHorizontal,
   Pause,
+  PanelLeft,
   Play,
   Plus,
   Search,
@@ -94,6 +95,7 @@ export function App() {
   const [needsAuth, setNeedsAuth] = useState(false);
   const [dialog, setDialog] = useState<Dialog>();
   const [mobile, setMobile] = useState(false);
+  const [navCollapsed, setNavCollapsed] = useState(false);
   const [pane, setPane] = useState(false);
   const [capture, setCapture] = useState<Result>();
   const [prompt, setPrompt] = useState('');
@@ -252,7 +254,7 @@ export function App() {
       </main>
     );
   const content = (
-    <div className="app template-app">
+    <div className={`app template-app ${navCollapsed ? 'nav-collapsed' : ''}`}>
       <button
         className="mobile-menu icon-button"
         aria-label="Open navigation"
@@ -404,6 +406,13 @@ export function App() {
       </aside>
       <div className="workspace">
         <header className="topbar">
+          <button
+            className="desktop-nav-toggle document-icon"
+            aria-label={navCollapsed ? 'Show navigation' : 'Hide navigation'}
+            onClick={() => setNavCollapsed(!navCollapsed)}
+          >
+            <PanelLeft size={18} />
+          </button>
           <div className="breadcrumbs">
             <span>
               {
@@ -479,6 +488,8 @@ export function App() {
             workspace={workspace}
             paused={state.settings.paused}
             onPage={(id) => openPage(spaceId, id)}
+            onSettings={() => setDialog({ type: 'settings' })}
+            onCreateDot={() => setDialog({ type: 'dot', spaceId })}
             onDirty={setDirtyPage}
             onRefresh={refresh}
             onSchedule={(threadId) => setDialog({ type: 'schedule', threadId })}

@@ -1,3 +1,4 @@
+import { contextualMessage, type PageContext } from './page-context';
 import { api } from './api';
 import type { Page } from '../server/pages';
 import { useEffect, useRef, useState } from 'react';
@@ -43,25 +44,33 @@ export function Chat({
     threadId: thread.id,
   });
   const { copilotkit } = useCopilotKit();
-  const [pageContext, setPageContext] = useState<Pick<
-    Page,
-    'id' | 'spaceId' | 'title'
-  > | null>(null);
+  const [pageContext, setPageContext] = useState<PageContext | null>();
+  const [contextError, setContextError] = useState('');
+  const [contextAttempt, setContextAttempt] = useState(0);
+  const contextReady = pageContext !== undefined;
   useEffect(() => {
     let active = true;
-    void api<Pick<Page, 'id' | 'spaceId' | 'title'> | null>(
+    setPageContext(undefined);
+    setContextError('');
+    void api<PageContext | null>(
       `/conversations/${thread.id}/page-context`,
+      'GET',
+      undefined,
+      AbortSignal.timeout(10000),
     )
       .then((page) => {
         if (active) setPageContext(page);
       })
-      .catch((e) => {
-        if (active) setError(e.message);
+      .catch(() => {
+        if (active)
+          setContextError(
+            'Conversation context could not load. Retry before sending your message.',
+          );
       });
     return () => {
       active = false;
     };
-  }, [thread.id]);
+  }, [thread.id, contextAttempt]);
   const [draft, setDraft] = useState('');
   const [source, setSource] = useState('');
   const [sourceOpen, setSourceOpen] = useState(false);
@@ -102,16 +111,13 @@ export function Chat({
     };
   }, [agent, copilotkit, isReady]);
   const send = async (text: string) => {
-    if (!text.trim() || running || !loaded || paused) return;
+    if (!text.trim() || running || !loaded || !contextReady || paused) return;
     setError('');
     setRunning(true);
-    const pagePrefix = pageContext
-      ? `From [${pageContext.title.replace(/[[\]\\]/g, '')}](/#/spaces/${pageContext.spaceId}/pages/${pageContext.id}):\n\n`
-      : '';
     agent.addMessage({
       id: crypto.randomUUID(),
       role: 'user',
-      content: pagePrefix + text,
+      content: contextualMessage(text, pageContext),
     });
     setDraft('');
     setSource('');
@@ -134,12 +140,12 @@ export function Chat({
     }
   };
   useEffect(() => {
-    if (loaded && initialPrompt && !sent.current) {
+    if (loaded && contextReady && !paused && initialPrompt && !sent.current) {
       sent.current = true;
       onConsumed();
       void send(initialPrompt);
     }
-  }, [loaded, initialPrompt]);
+  }, [loaded, contextReady, paused, initialPrompt]);
   useEffect(() => {
     bottom.current?.scrollIntoView({ behavior: 'instant', block: 'end' });
   }, [agent.messages.length, running]);
@@ -166,7 +172,7 @@ export function Chat({
               ? 'Paused'
               : running
                 ? 'Thinking…'
-                : loaded
+                : loaded && contextReady
                   ? 'Here with you'
                   : 'Connecting to your conversation…'}
           </span>
@@ -214,7 +220,7 @@ export function Chat({
                 ? 'Talk with your Dot'
                 : 'Voice setup requires VOICE_API_KEY and VOICE_MODEL'
             }
-            disabled={!voiceReady || paused || !loaded}
+            disabled={!voiceReady || paused || !loaded || !contextReady}
             onClick={() =>
               voice.status === 'idle' ? void voice.start() : void voice.end()
             }
@@ -257,6 +263,14 @@ export function Chat({
         )}
         <div ref={bottom} />
       </div>
+      {contextError && (
+        <div className="chat-error" role="alert">
+          {contextError}
+          <button onClick={() => setContextAttempt((value) => value + 1)}>
+            Retry context
+          </button>
+        </div>
+      )}
       {(error || voice.error) && (
         <div className="chat-error" role="alert">
           {error || voice.error}
@@ -357,7 +371,7 @@ export function Chat({
             <button
               className="send-button"
               aria-label="Send message"
-              disabled={!draft.trim() || !loaded || paused}
+              disabled={!draft.trim() || !loaded || !contextReady || paused}
             >
               <ArrowUp size={19} />
             </button>

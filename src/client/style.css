@@ -1,10 +1,5 @@
 :root {
-  font-family:
-    'DM Sans',
-    -apple-system,
-    BlinkMacSystemFont,
-    'Segoe UI',
-    sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   color: #333641;
   background: #f8f7f4;
   font-synthesis: none;
@@ -2160,8 +2155,8 @@ h3 {
   font-weight: 550;
 }
 .chat-persona span {
-  font-size: 9px;
-  color: #a5a9b5;
+  font-size: 11px;
+  color: #5c665e;
 }
 .chat-persona .chat-persona-actions {
   flex-direction: row;
@@ -2194,7 +2189,7 @@ h3 {
 .chat-bubble.user {
   align-self: flex-end;
   max-width: 79%;
-  background: #5baea9;
+  background: #35766f;
   color: white;
   padding: 11px 16px;
   border-radius: 17px 17px 5px 17px;
@@ -2293,8 +2288,8 @@ h3 {
   margin-bottom: 5px;
 }
 .chat-compose-note {
-  font-size: 8px;
-  color: #b6b8c1;
+  font-size: 11px;
+  color: #606b63;
   text-align: center;
   margin-top: 12px;
 }
@@ -2533,7 +2528,7 @@ h3 {
     padding: 10px 14px;
   }
   .chat-compose-note {
-    font-size: 7px;
+    font-size: 11px;
     line-height: 1.7;
   }
   .chat-welcome {
@@ -2817,7 +2812,7 @@ h3 {
 .page-chat-context {
   padding: 10px 20px;
   background: #f1f6f1;
-  color: #778272;
+  color: #53634f;
   font-size: 12px;
 }
 .page-chat-context a {
@@ -2828,6 +2823,12 @@ h3 {
 .chat-bubble a,
 .page-chat-context a {
   color: #357360;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.chat-bubble.user a {
+  color: #fff;
   text-decoration: underline;
   text-underline-offset: 3px;
 }

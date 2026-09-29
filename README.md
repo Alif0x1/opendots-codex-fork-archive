@@ -26,9 +26,11 @@ OpenDots is a starting point for building your own agent workspace. Clone it, de
 
 ### Spaces
 
-A Space is a home for working documents and the Dots that help with them. Create editable Markdown pages, organize them as nested subpages, and open a page alongside its conversation. Write directly, save a conversation as a page, or ask a specialist to create and revise content.
+A Space is a home for working documents and the Dots that help with them. Browse pages in a searchable library, switch between grid and list views, and organize documents as nested subpages. Open a page in a focused visual editor with formatting, slash commands, and undo/redo. Write directly, save a conversation as a page, or ask a specialist to create and revise content.
 
-Pages stay in the local workspace database. Their conversations use CopilotKit Threads, with a separate conversation for each page and specialist. Page links connect the document workspace to Dot chat. Manual editing works before you configure conversation services; revision checks prevent a stale save from overwriting newer content.
+Pages stay in the local workspace database. Their conversations use CopilotKit Threads, with a separate conversation for each page and specialist. Page links connect the document workspace to Dot chat. Manual editing works before you configure conversation services. Autosave reports its progress, failed saves retain your draft, and revision checks prevent stale edits from overwriting newer content. Markdown source mode remains available.
+
+![Spaces page library](docs/images/spaces-library.png)
 
 ![Spaces document workspace](docs/images/spaces-workspace.png)
 
@@ -95,7 +97,7 @@ See [Setup](docs/SETUP.md) for configuration, Slack, calls, the browser service,
 | Area                       | Included                                                                                  |
 | -------------------------- | ----------------------------------------------------------------------------------------- |
 | Spaces and Specialist Dots | Saved names, role instructions, and per-Dot research and memory permissions               |
-| Pages                      | Nested Markdown documents, direct editing, conversation export, and revision checks       |
+| Pages                      | Searchable library, visual editor, slash commands, autosave, and revision checks          |
 | Conversations              | React SDK chat and Threads integration, page-specific conversations, and source links     |
 | Slack                      | Managed Channels SDK declaration with workspace and user allowlists                       |
 | Calls                      | WebRTC speech, delegated compute, bounded sessions, hangup, and timeline receipts         |

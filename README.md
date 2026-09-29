@@ -8,17 +8,21 @@
 
 Spaces, specialist agents, and conversations that move between text, calls, and Slack.
 
-[Overview](#overview) · [Architecture](#architecture) · [Status](#development-status) · [Contributing](CONTRIBUTING.md)
+[Get started](#get-started) · [Overview](#overview) · [Architecture](#architecture) · [Status](#development-status) · [Contributing](CONTRIBUTING.md)
 
 </div>
 
 ---
 
+![OpenDots conversation layout](docs/images/chat-layout.png)
+
+_Conversation layout shown with visual-test fixtures. Connected-service verification is pending setup._
+
 ## Overview
 
 OpenDots is a starting point for building your own agent workspace. Clone it, define your Dots, connect your services, and adapt the interface and tools to your needs.
 
-**A template, not a hosted product.** You run the application and configure its infrastructure. The template is under development; the status table below separates implemented work from planned integrations.
+**A template, not a hosted product.** You run the application and configure its infrastructure. The template is in early development; the status table below distinguishes local verification from connected-service testing.
 
 ### Spaces
 
@@ -32,7 +36,7 @@ Give each Dot a name, role, instructions, and permitted tools. A researcher can 
 
 A continuous conversation keeps the Dot's avatar and status above the messages, with text and call controls close at hand. Work updates, source links, and call receipts appear in the timeline; a side panel shows results or the agent's computer.
 
-Calls pair realtime speech with a separate compute agent, so the conversation can continue while longer work runs. Both use the same conversation context and tool permissions. Voice integration is still in progress.
+Calls pair realtime speech with a separate compute agent, so the conversation can continue while longer work runs. Both use the same conversation context and tool permissions. Voice needs separate provider configuration.
 
 ### Slack
 
@@ -64,28 +68,45 @@ You configure the Intelligence project, model provider, and channel connection f
 
 [OpenMuse](https://github.com/CopilotKit/OpenMuse) and [OpenBot](https://github.com/CopilotKit/openbot) are code references for persistent work, agent computers, and execution controls. OpenDots can be adapted to your own workflows and deployment choices.
 
+## Get started
+
+Use **Node.js 24** and **npm**:
+
+```sh
+git clone https://github.com/CopilotKit/OpenDots.git
+cd OpenDots
+npm ci
+cp .env.example .env
+npm run dev
+```
+
+Open **http://127.0.0.1:5173**. You can create Spaces and configure Dots before connecting services. Add your conversation and model settings to `.env` to start chatting.
+
+See [Setup](docs/SETUP.md) for configuration, Slack, calls, the browser service, and Docker.
+
 ## Development status
 
-A local research prototype includes persistent tasks, scheduling, memory controls, a separate read-only browser, and a responsive companion UI. That work is being integrated into the template's conversation architecture.
+| Area                       | Included                                                                                  |
+| -------------------------- | ----------------------------------------------------------------------------------------- |
+| Spaces and Specialist Dots | Saved names, role instructions, and per-Dot research and memory permissions               |
+| Conversations              | React SDK chat and Threads integration, source links, and visible runtime errors          |
+| Slack                      | Managed Channels SDK declaration with workspace and user allowlists                       |
+| Calls                      | WebRTC speech, delegated compute, bounded sessions, hangup, and timeline receipts         |
+| Background work            | Scheduled server-side turns in their original conversation, with pause and retry controls |
+| Browser                    | Separate read-only public-page service with page capture and navigation limits            |
+| Memory                     | User-managed preferences that permitted Dots can use                                      |
+| Deployment                 | Local Node setup and separate application/browser containers                              |
 
-| Area                                              | Status                                                  |
-| ------------------------------------------------- | ------------------------------------------------------- |
-| Research tasks, scheduling, and browser isolation | Implemented in the local prototype; integration pending |
-| Intelligence runtime and Threads                  | Integration in progress                                 |
-| Spaces and Specialist Dots                        | Implementation in progress                              |
-| Conversation layout and text streaming            | Implementation in progress                              |
-| Slack                                             | Integration in progress                                 |
-| Realtime calls and compute delegation             | Integration in progress                                 |
-| Connected-service verification                    | Pending deployment configuration                        |
+Local checks cover setup, persistence, permissions, SDK failure handling, and browser isolation. Tests use service fixtures; **live Intelligence, model, Slack, and voice verification remains pending deployment configuration**.
 
-This initial repository milestone contains documentation. Application source and reproducible setup instructions will follow with the implementation.
+This is a single-owner starting point. Schedules are recurring instructions, not a complete goal or event-trigger system. Specialist Dots have separate roles and conversations; multi-Dot group conversations and automatic delegation are further work.
 
-### Next steps
+### Extending the template
 
-- Finish conversation persistence and Space/Dot configuration.
-- Connect text, Slack, and calls to the same authorized agent tools.
-- Verify background execution, cancellation, reconnects, and service failures.
-- Document local setup and container deployment.
+- Add identity and Space membership for multi-user deployments.
+- Add event triggers and a persistent responsibility lifecycle.
+- Extend tools and approval flows for your own workflows.
+- Add richer artifacts, connected-app context, and specialist coordination.
 
 ## Contributing
 

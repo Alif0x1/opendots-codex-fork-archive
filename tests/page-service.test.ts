@@ -140,3 +140,41 @@ it('retries a failed provider creation with the same canonical reserved ID', asy
   expect(getOrCreateThread).toHaveBeenCalledTimes(2);
   ws.close();
 });
+
+it('grants multiple Spaces without changing thread identity and enforces revocation on existing tools', async () => {
+  const ws = new WorkspaceStore(':memory:', 'owner');
+  const dot = ws.dots()[0];
+  const other = ws.createSpace('Launch', '');
+  const page = ws.pages.create(other.id, { title: 'Brief' });
+  ws.updateDot(dot.id, { ...dot, spaceIds: [dot.spaceId, other.id] });
+  const service = new PageService(ws, () => ({
+    getOrCreateThread: async () => {},
+    getThreadMessages: async () => ({
+      messages: [{ role: 'assistant', content: 'Saved text' }],
+    }),
+  }));
+  const thread = await service.conversation(other.id, page.id, dot.id);
+  const access = pageAccess(ws, dot.spaceId, thread.id, () => {});
+  expect(access.context()?.id).toBe(page.id);
+  expect(access.read(page.id).title).toBe('Brief');
+  expect(access.spaces()).toHaveLength(2);
+  expect(
+    (await service.saveConversation(thread.id, 'Copy', null)).spaceId,
+  ).toBe(other.id);
+  ws.updateDot(dot.id, { ...dot, spaceIds: [dot.spaceId] });
+  expect(() => access.read(page.id, other.id)).toThrow(/access/);
+  expect(() =>
+    access.edit(page.id, { expectedRevision: 1, content: 'No' }, other.id),
+  ).toThrow(/access/);
+  await expect(
+    service.conversation(other.id, page.id, dot.id),
+  ).rejects.toThrow();
+  await expect(service.saveConversation(thread.id, 'No', null)).rejects.toThrow(
+    /revoked/,
+  );
+  ws.updateDot(dot.id, { ...dot, spaceIds: [dot.spaceId, other.id] });
+  expect((await service.conversation(other.id, page.id, dot.id)).id).toBe(
+    thread.id,
+  );
+  ws.close();
+});

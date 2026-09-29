@@ -1,13 +1,15 @@
 import { useThreads } from '@copilotkit/react-core/v2';
 import { MessageCircle, Plus } from 'lucide-react';
-import type { Conversation } from '../shared/types';
+import type { Conversation, Dot } from '../shared/types';
 export function ThreadList({
+  dots,
   dotId,
   local,
   selected,
   onSelect,
   onNew,
 }: {
+  dots: Dot[];
   dotId: string;
   local: Conversation[];
   selected?: string;
@@ -23,7 +25,7 @@ export function ThreadList({
   return (
     <section className="thread-list">
       <div className="nav-label">
-        CONVERSATIONS
+        RECENT CHATS
         <button
           className="icon-button"
           onClick={onNew}
@@ -46,7 +48,10 @@ export function ThreadList({
             onClick={() => onSelect(thread.id)}
           >
             <MessageCircle size={15} />
-            <span>{remote?.name || thread.title}</span>
+            <span className="thread-summary">
+              <span>{remote?.name || thread.title}</span>
+              <small>{dots.find((dot) => dot.id === thread.dotId)?.name}</small>
+            </span>
           </button>
         );
       })}

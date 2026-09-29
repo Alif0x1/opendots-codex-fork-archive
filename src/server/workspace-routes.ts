@@ -9,6 +9,8 @@ const dotSchema = z
     instructions: z.string().trim().min(3).max(2000),
     researchAllowed: z.boolean(),
     memoryAllowed: z.boolean(),
+    spaceIds: z.array(z.string().min(1)).min(1).max(100).optional(),
+    spaceId: z.string().min(1).optional(),
   })
   .strict();
 export function workspaceRoutes(platform: Platform, voice: VoiceService) {
@@ -60,6 +62,7 @@ export function workspaceRoutes(platform: Platform, voice: VoiceService) {
         data.data.instructions,
         data.data.researchAllowed,
         data.data.memoryAllowed,
+        data.data.spaceIds,
       ),
       201,
     );

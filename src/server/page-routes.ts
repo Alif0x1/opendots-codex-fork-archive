@@ -7,9 +7,11 @@ export function pageRoutes(platform: Platform) {
   app.get('/conversations/:id/page-context', (c) => {
     const thread = platform.workspace.requireThread(c.req.param('id'));
     const dot = platform.workspace.dot(thread.dotId)!;
-    const page = platform.workspace.pages.forThread(thread.id, dot.spaceId);
+    const page = platform.workspace.pages.forThread(thread.id);
     return c.json(
-      page ? { id: page.id, spaceId: page.spaceId, title: page.title } : null,
+      page && platform.workspace.canAccessSpace(dot.id, page.spaceId)
+        ? { id: page.id, spaceId: page.spaceId, title: page.title }
+        : null,
     );
   });
   app.get('/spaces/:spaceId/pages', (c) =>

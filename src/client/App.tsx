@@ -1,4 +1,5 @@
 import { openPageLink } from './page-navigation';
+import { SpaceNav } from './SpaceNav';
 import { SpaceWorkspace } from './SpaceWorkspace';
 import { useCallback, useEffect, useState, useRef } from 'react';
 import { CopilotKitProvider } from '@copilotkit/react-core/v2';
@@ -6,7 +7,6 @@ import {
   ArrowUp,
   ArrowUpRight,
   BookOpen,
-  ChevronDown,
   Clock3,
   Code2,
   Folder,
@@ -58,6 +58,8 @@ export function App() {
     if (dirtyPage.current && !window.confirm('Leave your unsaved page draft?'))
       return;
     dirtyPage.current = false;
+    if (next !== 'space')
+      history.replaceState(null, '', location.pathname + location.search);
     rawSetView(next);
   };
   useEffect(() => {
@@ -342,6 +344,43 @@ export function App() {
           <span>New chat</span>
         </button>
         <div className="spaces-heading nav-label">
+          DOTS
+          <button
+            className="icon-button"
+            aria-label="Create Dot"
+            onClick={() =>
+              setDialog({ type: 'dot', spaceId: workspace.spaces[0].id })
+            }
+          >
+            <Plus size={14} />
+          </button>
+        </div>
+        <nav className="dots-nav" aria-label="Dots">
+          {workspace.dots.map((item) => (
+            <div className="dot-nav-row" key={item.id}>
+              <button
+                className={`dot-nav ${dot.id === item.id && view === 'chat' ? 'active' : ''}`}
+                aria-current={
+                  dot.id === item.id && view === 'chat' ? 'page' : undefined
+                }
+                onClick={() => chooseDot(item)}
+              >
+                <Mascot identity={item.id} name={item.name} small decorative />
+                <span>{item.name}</span>
+              </button>
+              <button
+                className="icon-button dot-settings"
+                aria-label={`Edit ${item.name} settings`}
+                onClick={() =>
+                  setDialog({ type: 'dot', dot: item, spaceId: item.spaceId })
+                }
+              >
+                <MoreHorizontal size={15} />
+              </button>
+            </div>
+          ))}
+        </nav>
+        <div className="spaces-heading nav-label">
           SPACES
           <button
             className="icon-button"
@@ -351,55 +390,28 @@ export function App() {
             <Plus size={14} />
           </button>
         </div>
-        <div className="spaces-nav">
+        <nav className="spaces-nav" aria-label="Spaces">
           {workspace.spaces.map((space) => (
-            <div className="space-group" key={space.id}>
-              <div className="space-title">
-                <Folder size={14} />
-                <button
-                  className="space-open"
-                  onClick={() => openPage(space.id)}
-                >
-                  {space.name}
-                </button>
-                <button
-                  className="icon-button"
-                  aria-label={`Create specialist Dot in ${space.name}`}
-                  onClick={() => setDialog({ type: 'dot', spaceId: space.id })}
-                >
-                  <Plus size={13} />
-                </button>
-              </div>
-              {workspace.dots
-                .filter((item) => item.spaceId === space.id)
-                .map((item) => (
-                  <button
-                    key={item.id}
-                    className={`dot-nav ${dot.id === item.id && view === 'chat' ? 'active' : ''}`}
-                    onClick={() => chooseDot(item)}
-                  >
-                    <Mascot
-                      identity={item.id}
-                      name={item.name}
-                      small
-                      decorative
-                    />
-                    <span>{item.name}</span>
-                    {dot.id === item.id && <ChevronDown size={12} />}
-                  </button>
-                ))}
-            </div>
+            <SpaceNav
+              key={space.id}
+              space={space}
+              active={view === 'space' && spaceId === space.id}
+              pageId={pageId}
+              onOpen={(id) => openPage(space.id, id)}
+            />
           ))}
-        </div>
+        </nav>
         {configured ? (
           <ThreadList
-            key={dot.id}
             dotId={dot.id}
-            local={workspace.conversations.filter(
-              (item) => item.dotId === dot.id,
-            )}
-            selected={selectedThread}
+            dots={workspace.dots}
+            local={workspace.conversations}
+            selected={view === 'chat' ? selectedThread : undefined}
             onSelect={(id) => {
+              const conversation = workspace.conversations.find(
+                (item) => item.id === id,
+              );
+              if (conversation) setSelectedDot(conversation.dotId);
               setSelectedThread(id);
               setView('chat');
               setMobile(false);
@@ -467,12 +479,9 @@ export function App() {
           </button>
           <div className="breadcrumbs">
             <span>
-              {
-                workspace.spaces.find(
-                  (space) =>
-                    space.id === (view === 'space' ? spaceId : dot.spaceId),
-                )?.name
-              }
+              {view === 'space'
+                ? workspace.spaces.find((space) => space.id === spaceId)?.name
+                : 'Dots'}
             </span>
             <span>/</span>
             <strong>
@@ -857,8 +866,8 @@ export function App() {
               dots={workspace.dots}
               defaultDotId={
                 view === 'space'
-                  ? (workspace.dots.find(
-                      (candidate) => candidate.spaceId === spaceId,
+                  ? (workspace.dots.find((candidate) =>
+                      candidate.spaceIds.includes(spaceId),
                     )?.id ?? dot.id)
                   : dot.id
               }

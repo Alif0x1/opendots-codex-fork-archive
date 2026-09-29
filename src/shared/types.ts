@@ -71,7 +71,9 @@ export interface Space {
 }
 export interface Dot {
   id: string;
+  /** Default destination for saved pages, not ownership. */
   spaceId: string;
+  spaceIds: string[];
   name: string;
   instructions: string;
   researchAllowed: boolean;

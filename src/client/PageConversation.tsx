@@ -26,7 +26,9 @@ export function PageConversation({
   onCreateDot: () => void;
   onOpenChange: (value: boolean) => void;
 }) {
-  const dots = workspace.dots.filter((dot) => dot.spaceId === page.spaceId);
+  const dots = workspace.dots.filter((dot) =>
+    dot.spaceIds.includes(page.spaceId),
+  );
   const [dotId, setDotId] = useState('');
   const dot = dots.find((dot) => dot.id === dotId) ?? dots[0];
   const [thread, setThread] = useState<Conversation>();

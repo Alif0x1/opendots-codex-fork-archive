@@ -22,6 +22,19 @@ export class WorkspaceStore {
       CREATE TABLE IF NOT EXISTS task_threads(taskId TEXT PRIMARY KEY, threadId TEXT NOT NULL);
       CREATE TABLE IF NOT EXISTS calls(id TEXT PRIMARY KEY, threadId TEXT NOT NULL, startedAt INTEGER NOT NULL, endedAt INTEGER, status TEXT NOT NULL, transcript TEXT NOT NULL, error TEXT);
       CREATE TABLE IF NOT EXISTS captures(threadId TEXT PRIMARY KEY, value TEXT NOT NULL);`);
+    // Migrate only once: restarting must never restore a revoked grant.
+    if (
+      !this.db
+        .prepare(
+          "SELECT name FROM sqlite_master WHERE type='table' AND name='dot_spaces'",
+        )
+        .get()
+    ) {
+      this.db.exec(`BEGIN;
+        CREATE TABLE dot_spaces(dotId TEXT NOT NULL, spaceId TEXT NOT NULL, PRIMARY KEY(dotId, spaceId));
+        INSERT INTO dot_spaces SELECT id, spaceId FROM dots;
+        COMMIT;`);
+    }
     this.computers = new ComputerStore(this.db);
     this.pages = new Pages(this.db, (id) =>
       this.spaces().some((space) => space.id === id),
@@ -73,6 +86,12 @@ export class WorkspaceStore {
       .all()
       .map((row) => ({
         ...row,
+        spaceIds: this.db
+          .prepare(
+            'SELECT spaceId FROM dot_spaces WHERE dotId=? ORDER BY spaceId',
+          )
+          .all(String(row.id))
+          .map((grant) => String(grant.spaceId)),
         researchAllowed: !!row.researchAllowed,
         memoryAllowed: !!row.memoryAllowed,
       })) as unknown as Dot[];
@@ -86,50 +105,89 @@ export class WorkspaceStore {
     instructions: string,
     researchAllowed: boolean,
     memoryAllowed: boolean,
+    spaceIds: string[] = [spaceId],
   ): Dot {
-    if (!this.spaces().some((space) => space.id === spaceId))
-      throw new Error('Space not found.');
+    this.validateSpaceAccess(spaceId, spaceIds);
     const dot: Dot = {
       id: randomUUID(),
       spaceId,
+      spaceIds: [...new Set(spaceIds)].sort(),
       name,
       instructions,
       researchAllowed,
       memoryAllowed,
       createdAt: Date.now(),
     };
-    this.db
-      .prepare('INSERT INTO dots VALUES (?, ?, ?, ?, ?, ?, ?)')
-      .run(
-        dot.id,
-        spaceId,
-        name,
-        instructions,
-        +researchAllowed,
-        +memoryAllowed,
-        dot.createdAt,
-      );
+    this.db.exec('BEGIN');
+    try {
+      this.db
+        .prepare('INSERT INTO dots VALUES (?, ?, ?, ?, ?, ?, ?)')
+        .run(
+          dot.id,
+          spaceId,
+          name,
+          instructions,
+          +researchAllowed,
+          +memoryAllowed,
+          dot.createdAt,
+        );
+      for (const id of dot.spaceIds)
+        this.db.prepare('INSERT INTO dot_spaces VALUES (?, ?)').run(dot.id, id);
+      this.db.exec('COMMIT');
+    } catch (error) {
+      this.db.exec('ROLLBACK');
+      throw error;
+    }
     return dot;
+  }
+  canAccessSpace(dotId: string, spaceId: string) {
+    return !!this.db
+      .prepare('SELECT 1 FROM dot_spaces WHERE dotId=? AND spaceId=?')
+      .get(dotId, spaceId);
+  }
+  private validateSpaceAccess(defaultSpace: string, spaceIds: string[]) {
+    if (
+      !spaceIds.includes(defaultSpace) ||
+      spaceIds.some((id) => !this.spaces().some((space) => space.id === id))
+    )
+      throw new Error('Space access must include a valid default destination.');
   }
   updateDot(
     id: string,
     patch: Pick<
       Dot,
       'name' | 'instructions' | 'researchAllowed' | 'memoryAllowed'
-    >,
+    > & { spaceId?: string; spaceIds?: string[] },
   ): Dot {
-    if (!this.dot(id)) throw new Error('Dot not found.');
-    this.db
-      .prepare(
-        'UPDATE dots SET name=?, instructions=?, researchAllowed=?, memoryAllowed=? WHERE id=?',
-      )
-      .run(
-        patch.name,
-        patch.instructions,
-        +patch.researchAllowed,
-        +patch.memoryAllowed,
-        id,
-      );
+    const current = this.dot(id);
+    if (!current) throw new Error('Dot not found.');
+    const defaultSpace = patch.spaceId ?? current.spaceId;
+    const spaceIds = patch.spaceIds ?? current.spaceIds;
+    this.validateSpaceAccess(defaultSpace, spaceIds);
+    this.db.exec('BEGIN');
+    try {
+      this.db
+        .prepare(
+          'UPDATE dots SET name=?, instructions=?, researchAllowed=?, memoryAllowed=? WHERE id=?',
+        )
+        .run(
+          patch.name,
+          patch.instructions,
+          +patch.researchAllowed,
+          +patch.memoryAllowed,
+          id,
+        );
+      this.db
+        .prepare('UPDATE dots SET spaceId=? WHERE id=?')
+        .run(defaultSpace, id);
+      this.db.prepare('DELETE FROM dot_spaces WHERE dotId=?').run(id);
+      for (const space of new Set(spaceIds))
+        this.db.prepare('INSERT INTO dot_spaces VALUES (?, ?)').run(id, space);
+      this.db.exec('COMMIT');
+    } catch (error) {
+      this.db.exec('ROLLBACK');
+      throw error;
+    }
     return this.dot(id)!;
   }
   conversations(): Conversation[] {

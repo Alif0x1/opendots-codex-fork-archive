@@ -40,6 +40,12 @@ export function WorkspaceDialog({
       ? (dialog.dot?.memoryAllowed ?? true)
       : state.settings.memoryAllowed,
   );
+  const [spaceIds, setSpaceIds] = useState(
+    dialog.type === 'dot' ? (dialog.dot?.spaceIds ?? [dialog.spaceId]) : [],
+  );
+  const [defaultSpace, setDefaultSpace] = useState(
+    dialog.type === 'dot' ? (dialog.dot?.spaceId ?? dialog.spaceId) : '',
+  );
   const [interval, setInterval] = useState('86400');
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
@@ -122,7 +128,8 @@ export function WorkspaceDialog({
               path = dialog.dot ? `/dots/${dialog.dot.id}` : '/dots';
               method = dialog.dot ? 'PUT' : 'POST';
               body = {
-                ...(dialog.dot ? {} : { spaceId: dialog.spaceId }),
+                spaceId: defaultSpace,
+                spaceIds,
                 name,
                 instructions: text,
                 researchAllowed: research,
@@ -194,6 +201,51 @@ export function WorkspaceDialog({
                 }
               />
             </>
+          )}
+          {dialog.type === 'dot' && (
+            <fieldset className="space-access-fields">
+              <legend>Space access</legend>
+              <p className="muted">
+                Choose where this Dot can read and edit pages.
+              </p>
+              {workspace.spaces.map((space) => (
+                <label className="permission-row" key={space.id}>
+                  <input
+                    type="checkbox"
+                    checked={spaceIds.includes(space.id)}
+                    onChange={(event) => {
+                      const next = event.target.checked
+                        ? [...spaceIds, space.id]
+                        : spaceIds.filter((id) => id !== space.id);
+                      setSpaceIds(next);
+                      if (!next.includes(defaultSpace))
+                        setDefaultSpace(next[0] ?? '');
+                    }}
+                  />
+                  <span>{space.name}</span>
+                </label>
+              ))}
+              <label className="field-label" htmlFor="default-space">
+                Default destination for saved pages
+              </label>
+              <select
+                id="default-space"
+                value={defaultSpace}
+                required
+                onChange={(event) => setDefaultSpace(event.target.value)}
+              >
+                <option value="" disabled>
+                  Choose a Space
+                </option>
+                {workspace.spaces
+                  .filter((space) => spaceIds.includes(space.id))
+                  .map((space) => (
+                    <option key={space.id} value={space.id}>
+                      {space.name}
+                    </option>
+                  ))}
+              </select>
+            </fieldset>
           )}
           {(dialog.type === 'dot' || dialog.type === 'settings') && (
             <>

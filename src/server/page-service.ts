@@ -46,8 +46,11 @@ export class PageService {
   async conversation(spaceId: string, pageId: string, dotId: string) {
     const page = this.workspace.pages.get(spaceId, pageId);
     const dot = this.workspace.dot(dotId);
-    if (!dot || dot.spaceId !== spaceId)
-      throw new PageError('Choose a specialist in this Space.', 400);
+    if (!dot || !this.workspace.canAccessSpace(dotId, spaceId))
+      throw new PageError(
+        'Choose a specialist in this Space with access enabled.',
+        400,
+      );
     const key = `${pageId}:${dotId}`;
     const pending = this.pending.get(key);
     if (pending) return pending;
@@ -72,6 +75,8 @@ export class PageService {
             name: page.title,
           }),
         );
+        if (!this.workspace.canAccessSpace(dotId, spaceId))
+          throw new PageError('Space access has been revoked.');
         const thread =
           this.workspace.conversations().find((t) => t.id === threadId) ??
           this.workspace.bindThread(threadId, dotId, page.title);
@@ -129,8 +134,12 @@ export class PageService {
       throw new PageError(
         'This conversation exceeds the 100,000 character page limit. Save a shorter conversation.',
       );
+    const destination =
+      this.workspace.pages.forThread(threadId)?.spaceId ?? dot.spaceId;
+    if (!this.workspace.canAccessSpace(dot.id, destination))
+      throw new PageError('Space access has been revoked.', 400);
     return this.workspace.pages.create(
-      dot.spaceId,
+      destination,
       { title, content, parentId },
       threadId,
     );

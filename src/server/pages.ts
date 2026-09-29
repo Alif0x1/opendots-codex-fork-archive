@@ -184,10 +184,14 @@ export class Pages {
       )
       .run(pageId, dotId);
   }
-  forThread(threadId: string, spaceId: string): Page | undefined {
+  forThread(threadId: string, spaceId?: string): Page | undefined {
     const row = this.db
-      .prepare('SELECT pageId FROM page_threads WHERE threadId=? AND ready=1')
+      .prepare(
+        'SELECT pageId, pages.spaceId FROM page_threads JOIN pages ON pages.id=page_threads.pageId WHERE threadId=? AND ready=1',
+      )
       .get(threadId);
-    return row ? this.get(spaceId, String(row.pageId)) : undefined;
+    return row
+      ? this.get(spaceId ?? String(row.spaceId), String(row.pageId))
+      : undefined;
   }
 }

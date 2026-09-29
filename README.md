@@ -14,9 +14,9 @@ Spaces, specialist agents, and conversations that move between text, calls, and 
 
 ---
 
-![OpenDots conversation layout](docs/images/chat-layout.png)
+![Live specialist conversation](docs/demos/specialist-chat.gif)
 
-_Conversation layout shown with visual-test fixtures. Connected-service verification is pending setup._
+_A live conversation with Scout, backed by CopilotKit Intelligence and an OpenAI model. [Watch the MP4](docs/demos/specialist-chat.mp4)._
 
 ## Overview
 
@@ -30,11 +30,9 @@ A Space is a home for working documents and the Dots that help with them. Browse
 
 Pages stay in the local workspace database. Their conversations use CopilotKit Threads, with a separate conversation for each page and specialist. Page links connect the document workspace to Dot chat. Manual editing works before you configure conversation services. Autosave reports its progress, failed saves retain your draft, and revision checks prevent stale edits from overwriting newer content. Markdown source mode remains available.
 
-![Spaces page library](docs/images/spaces-library.png)
+![Create a page and ask a specialist about it](docs/demos/spaces-page-chat.gif)
 
-![Spaces document workspace](docs/images/spaces-workspace.png)
-
-_Local workspace with example pages created through the application. Page chat awaits service setup._
+_Create a page, insert a heading, write a brief, and ask Scout about the saved document. This recording uses live page chat and example launch content. [Watch the MP4](docs/demos/spaces-page-chat.mp4)._
 
 ### Specialist Dots
 
@@ -113,7 +111,7 @@ See [Setup](docs/SETUP.md) for configuration, Slack, calls, the browser service,
 | Memory                     | User-managed preferences that permitted Dots can use                                              |
 | Deployment                 | Local Node setup and separate application/browser containers                                      |
 
-Local checks cover setup, persistence, permissions, SDK failure handling, and browser isolation. Tests use service fixtures; **live Intelligence, model, Slack, voice, and Dot-computer verification remains pending deployment configuration**.
+Local checks cover setup, persistence, permissions, SDK failure handling, and browser isolation. Automated tests use service fixtures. **Live Intelligence, model responses, and page-context chat were verified on September 29, 2026.** Slack, voice, and Dot-computer verification still require their own deployment configuration. See [recording notes](docs/demos/README.md) for the demonstrated flows and limits.
 
 This is a single-owner starting point. Shared editing, invitations, file uploads, and interactive page embeds are not included. Schedules are recurring instructions, not a complete goal or event-trigger system. Specialist Dots have separate roles and conversations; multi-Dot group conversations and automatic delegation are further work.
 

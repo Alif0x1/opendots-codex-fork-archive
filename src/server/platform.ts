@@ -6,30 +6,16 @@ import {
   createCopilotHonoHandler,
   type CopilotHonoApp,
 } from '@copilotkit/runtime/v2';
-import {
-  createChannel,
-  type ChannelIdentityContext,
-} from '@copilotkit/channels';
+import { createSlackChannel } from './slack-channel.js';
+export { slackIdentity } from './slack-channel.js';
 import { Store } from './store.js';
 import { WorkspaceStore } from './workspace.js';
 import { DotAgent } from './dot-agent.js';
 import { runThreadTurn } from './headless.js';
 import { setupStatus, type PlatformConfig } from './platform-config.js';
 import { validateRuntimeScope } from './runtime-scope.js';
-export function slackIdentity(
-  context: ChannelIdentityContext,
-  config: PlatformConfig,
-  ownerId: string,
-) {
-  if (
-    context.provider !== 'slack' ||
-    context.tenant.id !== config.slackTeam ||
-    !config.slackUsers.includes(context.actor.id)
-  )
-    return null;
-  return { id: ownerId, name: 'OpenDots owner' };
-}
 export class Platform {
+  private channelStartupFailed = false;
   readonly pages: PageService;
   readonly intelligence?: CopilotKitIntelligence;
   readonly handler?: CopilotHonoApp;
@@ -53,17 +39,12 @@ export class Platform {
       const dotId = config.slackDotId ?? workspace.dots()[0].id;
       if (!workspace.dot(dotId))
         throw new Error('SLACK_DOT_ID does not identify an existing Dot.');
-      const slack = createChannel({
+      const slack = createSlackChannel({
         name: config.slackChannel,
-        identifyUser: (context) =>
-          slackIdentity(context, config, workspace.ownerId),
+        config,
+        ownerId: workspace.ownerId,
+        paused: () => store.settings().paused,
         agent: () => new DotAgent(store, workspace, config, dotId, true),
-        store: { concurrency: 'serial' },
-      });
-      slack.onMessage(async ({ thread, message }) => {
-        if (!message.user || message.user.id !== workspace.ownerId) return;
-        if (store.settings().paused) return;
-        await thread.runAgent();
       });
       channels.push(slack);
     }
@@ -96,6 +77,7 @@ export class Platform {
       this.config,
       this.handler?.channels?.status().overall ??
         (this.config.slackChannel ? 'setup_required' : 'not_configured'),
+      this.channelStartupFailed,
     );
   }
   requireReady() {
@@ -109,10 +91,10 @@ export class Platform {
     if (this.handler?.channels) {
       try {
         await this.handler.channels.ready({ timeoutMs: 15000 });
-      } catch {
-        console.error(
-          'Slack Channels activation did not complete; check setup status.',
-        );
+        this.channelStartupFailed = false;
+      } catch (error) {
+        this.channelStartupFailed = true;
+        throw error;
       }
     }
   }

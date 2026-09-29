@@ -65,14 +65,43 @@ Use the same secret on the app and browser processes. Browser navigation is read
 
 ## Slack
 
-Provision a managed Slack connection for your Intelligence project, then configure:
+OpenDots uses `@copilotkit/channels` with a managed Slack connection, following the runtime and channel pattern in [OpenTag](https://github.com/CopilotKit/OpenTag). The application declares the channel and its specialist agent; Intelligence manages the Slack adapter and delivery. You do not need a separate Slack webhook server or Socket Mode connection in OpenDots.
 
-- `SLACK_CHANNEL_NAME`: the Channels SDK declaration name, matching the Intelligence channel code.
-- `SLACK_TEAM_ID`: the permitted Slack workspace.
-- `SLACK_USER_IDS`: the explicitly permitted Slack users, separated by commas.
-- `SLACK_DOT_ID`: the Specialist Dot handling the channel; defaults to the initial Dot. Find Dot IDs in the authenticated `/api/workspace` response.
+### Create the managed channel
 
-These are configuration identifiers, not Slack bot tokens. Use the [Channels SDK documentation](https://github.com/CopilotKit/channels-sdk) for managed connection setup. Verify the selected Dot and audience before using private workspace context in Slack.
+Select the same Intelligence project used by this application, then create a uniquely named channel:
+
+```sh
+npx --yes copilotkit@latest project select
+npx --yes copilotkit@latest channels add --name opendots --display-name "OpenDots" --adapter slack --json
+```
+
+Follow the CLI's returned `nextAction` to create the Slack app from its generated manifest, supply credentials through the managed setup flow, and run its `resumeCommand`. A `blocked` response means a Slack-console step is still needed; a `failed` response must be resolved before continuing. Keep Socket Mode off. Install or reinstall the generated app in your workspace with its requested scopes. Use a distinct channel name for separate deployments so they do not compete for deliveries.
+
+See [OpenTag's setup guide](https://github.com/CopilotKit/OpenTag/blob/main/setup.md) for the Slack-console walkthrough. Slack bot tokens and signing secrets belong in the managed adapter configuration, not the browser or this application's `.env`.
+
+### Connect a specialist
+
+Configure the application server's `.env` alongside its Intelligence and model credentials:
+
+```dotenv
+SLACK_CHANNEL_NAME=opendots
+SLACK_TEAM_ID=T_REPLACE_WITH_WORKSPACE_ID
+SLACK_USER_IDS=U_REPLACE_WITH_YOUR_USER_ID
+SLACK_DOT_ID=REPLACE_WITH_DOT_ID
+```
+
+`SLACK_CHANNEL_NAME` must exactly match the managed channel name, not a Slack conversation name such as `#general`. OpenTag calls this setting `INTELLIGENCE_CHANNEL_NAME`; OpenDots uses `SLACK_CHANNEL_NAME`. `SLACK_TEAM_ID` and the comma-separated `SLACK_USER_IDS` restrict who may invoke the specialist. `SLACK_DOT_ID` selects an existing Dot; find IDs in the authenticated `/api/workspace` response. If omitted, it defaults to the initial Dot.
+
+Restart OpenDots after changing environment settings and inspect Slack status in Settings & setup. Channel activation must complete before trying a message. Mention the installed bot in a channel it can access; subsequent messages in that followed thread go to the same specialist. Unrelated threads, bot events, edits, deletions, and users outside the allowlist do not start agent runs. Editing a message to add a mention is not supported; send a new message instead.
+
+This template maps permitted Slack users to the single OpenDots owner. Replies are visible to the Slack conversation's audience, so choose the specialist's Space and permitted tools accordingly. This is not a multi-user identity model.
+
+### Verify your deployment
+
+From an allowed user, mention the bot and verify a response in the same Slack thread. Reply in that thread and confirm continuity. Check that an unrelated thread and an unapproved user cannot invoke it. Pause the assistant in OpenDots and verify that a permitted request receives a paused notice. Check Settings & setup for channel connection failures.
+
+Local tests exercise channel behavior with fixtures. A live Slack mention/reply remains unverified until you provision the managed connection and model credentials. [Channels SDK documentation](https://github.com/CopilotKit/channels-sdk) describes extending the adapter and channel behavior.
 
 ## Calls
 

@@ -48,7 +48,7 @@ Calls pair realtime speech with a separate compute agent, so the conversation ca
 
 ### Slack
 
-Message a Dot through a managed Slack connection using Channels SDK. Explicit identity and Space mappings determine which conversations and tools a Slack user can access.
+Mention a Dot through a managed Slack connection using Channels SDK, then continue in its thread. The integration follows [OpenTag](https://github.com/CopilotKit/OpenTag), with an explicit workspace/user allowlist and a selected specialist. See [Slack setup](docs/SETUP.md#slack) to connect your deployment.
 
 ## Architecture
 
@@ -128,6 +128,7 @@ See [Contributing](CONTRIBUTING.md) for development guidance and [Security](SECU
 - [Channels SDK](https://github.com/CopilotKit/channels-sdk)
 - [OpenMuse](https://github.com/CopilotKit/OpenMuse)
 - [OpenBot](https://github.com/CopilotKit/openbot)
+- [OpenTag](https://github.com/CopilotKit/OpenTag) — Channels SDK integration reference
 
 ## License
 

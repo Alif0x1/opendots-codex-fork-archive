@@ -9,6 +9,11 @@ import { Store } from './store.js';
 import { WorkspaceStore } from './workspace.js';
 import type { PlatformConfig } from './platform-config.js';
 import { browserResponse } from './research.js';
+const channelError = () => ({
+  type: EventType.RUN_ERROR,
+  message:
+    'OpenDots could not complete this request. Please check the app and try again.',
+});
 export class DotAgent extends AbstractAgent {
   private inner?: BuiltInAgent;
   private controller?: AbortController;
@@ -166,13 +171,33 @@ export class DotAgent extends AbstractAgent {
         });
         subscription = this.inner
           .run({ ...input, tools: [], forwardedProps: {} })
-          .subscribe(subscriber);
+          .subscribe({
+            next: (event) =>
+              subscriber.next(
+                this.channel && event.type === EventType.RUN_ERROR
+                  ? channelError()
+                  : event,
+              ),
+            error: (error: unknown) => {
+              if (this.channel) {
+                subscriber.next(channelError());
+                subscriber.complete();
+              } else subscriber.error(error);
+            },
+            complete: () => subscriber.complete(),
+          });
       } catch (error) {
-        subscriber.next({
-          type: EventType.RUN_ERROR,
-          message:
-            error instanceof Error ? error.message : 'Dot could not start.',
-        });
+        subscriber.next(
+          this.channel
+            ? channelError()
+            : {
+                type: EventType.RUN_ERROR,
+                message:
+                  error instanceof Error
+                    ? error.message
+                    : 'Dot could not start.',
+              },
+        );
         subscriber.complete();
       }
       return () => {

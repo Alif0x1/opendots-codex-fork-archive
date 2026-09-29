@@ -21,6 +21,7 @@ export interface PlatformConfig {
 export function setupStatus(
   config: PlatformConfig,
   slack = 'not_configured',
+  activationFailed = false,
 ): SetupStatus {
   const missing = [
     !config.intelligenceKey && 'INTELLIGENCE_API_KEY',
@@ -33,7 +34,9 @@ export function setupStatus(
     config.slackUsers.length
   );
   slack = declaredSlack
-    ? slack
+    ? activationFailed && slack !== 'online'
+      ? 'activation_failed'
+      : slack
     : config.slackChannel || config.slackTeam || config.slackUsers.length
       ? 'setup_required'
       : 'not_configured';

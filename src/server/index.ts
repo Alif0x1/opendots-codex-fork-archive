@@ -1,3 +1,5 @@
+import { createShutdown } from './shutdown.js';
+import { reportChannelFailure, safeFailure } from './slack-channel.js';
 import { serve } from '@hono/node-server';
 import { serveStatic } from '@hono/node-server/serve-static';
 import { Store } from './store.js';
@@ -97,16 +99,25 @@ app.get('*', serveStatic({ path: './dist/client/index.html' }));
 const server = serve({ fetch: app.fetch, hostname: host, port }, (info) => {
   console.log(`OpenDots template listening on http://${host}:${info.port}`);
   runner.start();
-  void platform.start();
+  void platform
+    .start()
+    .catch((error) =>
+      reportChannelFailure(
+        'Slack Channels activation failed; check setup status',
+        [safeFailure(error)],
+      ),
+    );
 });
-let closing = false;
-function shutdown() {
-  if (closing) return;
-  closing = true;
-  runner.stop();
-  void platform.stop();
-  server.close();
-  setTimeout(() => process.exit(0), 250).unref();
-}
+const shutdown = createShutdown({
+  stopRunner: () => runner.stop(),
+  stopPlatform: () => platform.stop(),
+  closeServer: () =>
+    new Promise<void>((resolve, reject) =>
+      server.close((error) => (error ? reject(error) : resolve())),
+    ),
+  exit: (code) => process.exit(code),
+  report: (operation, error) =>
+    reportChannelFailure(operation, [safeFailure(error)]),
+});
 process.on('SIGTERM', shutdown);
 process.on('SIGINT', shutdown);

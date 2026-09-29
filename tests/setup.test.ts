@@ -39,3 +39,15 @@ it('requires Intelligence and model setup and disables voice when either is abse
     }),
   ).toMatchObject({ missing: ['INTELLIGENCE_API_KEY'], voice: false });
 });
+it('reports activation failure until the SDK recovers online', () => {
+  const declared = {
+    ...config,
+    slackChannel: 'support',
+    slackTeam: 'team',
+    slackUsers: ['owner'],
+  };
+  expect(setupStatus(declared, 'offline', true).slack).toBe(
+    'activation_failed',
+  );
+  expect(setupStatus(declared, 'online', true).slack).toBe('online');
+});

@@ -378,7 +378,12 @@ export function App() {
                     className={`dot-nav ${dot.id === item.id && view === 'chat' ? 'active' : ''}`}
                     onClick={() => chooseDot(item)}
                   >
-                    <span className="dot-nav-mark" />
+                    <Mascot
+                      identity={item.id}
+                      name={item.name}
+                      small
+                      decorative
+                    />
                     <span>{item.name}</span>
                     {dot.id === item.id && <ChevronDown size={12} />}
                   </button>
@@ -573,7 +578,11 @@ export function App() {
               ) : (
                 <div className="new-conversation">
                   <div className="empty-chat-persona">
-                    <Mascot state={state.settings.paused ? 'paused' : 'idle'} />
+                    <Mascot
+                      identity={dot.id}
+                      name={dot.name}
+                      state={state.settings.paused ? 'paused' : 'idle'}
+                    />
                     <h2>{dot.name}</h2>
                     <p>{dot.instructions}</p>
                     <button

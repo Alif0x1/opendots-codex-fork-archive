@@ -175,7 +175,11 @@ export function ResultPane({
         </div>
       ) : (
         <div className="pane-empty">
-          <Mascot state={dotState} />
+          <Mascot
+            identity={defaultDotId}
+            name={dots.find((dot) => dot.id === defaultDotId)?.name}
+            state={dotState}
+          />
           <h3>A little space for your findings.</h3>
           <p>
             {status === 'failed'

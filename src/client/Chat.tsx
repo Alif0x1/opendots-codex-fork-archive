@@ -162,6 +162,8 @@ export function Chat({
     <div className="live-chat">
       <header className="chat-persona">
         <Mascot
+          identity={dot.id}
+          name={dot.name}
           small
           state={running ? 'working' : paused ? 'paused' : 'idle'}
         />

@@ -2,10 +2,12 @@
 
 Recorded from the local OpenDots app on September 29, 2026. The recordings use a dedicated `opendots` Intelligence project, a live `gpt-5.4-mini` model, and example content in a separate Launch studio Space. No customer data or credentials are shown.
 
-| Recording                                    | Flow                                                                                         | Duration     |
-| -------------------------------------------- | -------------------------------------------------------------------------------------------- | ------------ |
-| [Specialist chat](specialist-chat.mp4)       | Select Scout, send a launch-planning question, receive a live response                       | 12.5 seconds |
-| [Spaces and page chat](spaces-page-chat.mp4) | Create a page, insert a heading with the block menu, write a brief, ask about the saved page | 20 seconds   |
+| Recording                                    | Flow                                                                                          | Duration   |
+| -------------------------------------------- | --------------------------------------------------------------------------------------------- | ---------- |
+| [Specialist chat](specialist-chat.mp4)       | Continue a launch-planning conversation with Scout and receive a live follow-up response      | 16 seconds |
+| [Spaces and page chat](spaces-page-chat.mp4) | Open a Space and page, ask about the saved brief, then open the same conversation under Scout | 24 seconds |
+
+Both recordings show the updated plush avatars and separate Dots, Spaces, and recent-chat navigation. Space-access settings preserve existing grants; these demos do not broaden any permissions.
 
 The README embeds compact GIF versions. MP4 versions are included for playback and reuse. These are screen-capture walkthroughs, with pauses between recording segments omitted; no assistant responses are fabricated or replaced. The captures are sampled at four frames per second, so they are intended to show workflows rather than animation performance. They have no audio.
 

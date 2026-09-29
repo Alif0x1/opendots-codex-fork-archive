@@ -16,7 +16,7 @@ Spaces, specialist agents, and conversations that move between text, calls, and 
 
 ![Live specialist conversation](docs/demos/specialist-chat.gif)
 
-_A live conversation with Scout, backed by CopilotKit Intelligence and an OpenAI model. [Watch the MP4](docs/demos/specialist-chat.mp4)._
+_A live conversation with Scout, with the updated Dot avatars and separate Dots, Spaces, and recent chats. [Watch the MP4](docs/demos/specialist-chat.mp4)._
 
 ## Overview
 
@@ -30,9 +30,9 @@ A Space is a home for working documents. Dots appear separately in navigation an
 
 Pages stay in the local workspace database. Their conversations use CopilotKit Threads, with a separate conversation for each page and specialist. Page links connect the document workspace to Dot chat. Manual editing works before you configure conversation services. Autosave reports its progress, failed saves retain your draft, and revision checks prevent stale edits from overwriting newer content. Markdown source mode remains available.
 
-![Create a page and ask a specialist about it](docs/demos/spaces-page-chat.gif)
+![Navigate Spaces and ask a specialist about a page](docs/demos/spaces-page-chat.gif)
 
-_Create a page, insert a heading, write a brief, and ask Scout about the saved document. This recording uses live page chat and example launch content. [Watch the MP4](docs/demos/spaces-page-chat.mp4)._
+_Open a Space, navigate to its launch brief, ask Scout about the saved page, and continue in Dot chat. This recording uses live page chat and example launch content. [Watch the MP4](docs/demos/spaces-page-chat.mp4)._
 
 ### Specialist Dots
 

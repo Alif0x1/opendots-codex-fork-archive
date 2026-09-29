@@ -40,6 +40,12 @@ _Local workspace with example pages created through the application. Page chat a
 
 Give each Dot a name, role, instructions, and permitted tools. A researcher can investigate a topic; a writer can turn findings into a draft. Inspect their work and control what they can do.
 
+### Dot computers
+
+Each Dot can have its own computer, using [OpenBot](https://github.com/CopilotKit/OpenBot)'s container supervisor and computer service. Its browser profile and workspace files persist across stop/start. The Computer panel exposes browser control, human takeover, files, terminal output, and activity, with browser, file, and shell permissions set per Dot. The application keeps service credentials on the server and derives a different computer credential for each Dot.
+
+See [Computer setup](docs/COMPUTERS.md) to build the pinned services and connect your deployment. Computer tools require those services; an unconfigured template does not execute commands on your host.
+
 ### Text and calls
 
 A continuous conversation keeps the Dot's avatar and status above the messages, with text and call controls close at hand. Work updates, source links, and call receipts appear in the timeline; a side panel shows results or the agent's computer.
@@ -94,19 +100,20 @@ See [Setup](docs/SETUP.md) for configuration, Slack, calls, the browser service,
 
 ## Development status
 
-| Area                       | Included                                                                                  |
-| -------------------------- | ----------------------------------------------------------------------------------------- |
-| Spaces and Specialist Dots | Saved names, role instructions, and per-Dot research and memory permissions               |
-| Pages                      | Searchable library, visual editor, slash commands, autosave, and revision checks          |
-| Conversations              | React SDK chat and Threads integration, page-specific conversations, and source links     |
-| Slack                      | Managed Channels SDK declaration with workspace and user allowlists                       |
-| Calls                      | WebRTC speech, delegated compute, bounded sessions, hangup, and timeline receipts         |
-| Background work            | Scheduled server-side turns in their original conversation, with pause and retry controls |
-| Browser                    | Separate read-only public-page service with page capture and navigation limits            |
-| Memory                     | User-managed preferences that permitted Dots can use                                      |
-| Deployment                 | Local Node setup and separate application/browser containers                              |
+| Area                       | Included                                                                                          |
+| -------------------------- | ------------------------------------------------------------------------------------------------- |
+| Spaces and Specialist Dots | Saved names, role instructions, and per-Dot research and memory permissions                       |
+| Pages                      | Searchable library, visual editor, slash commands, autosave, and revision checks                  |
+| Conversations              | React SDK chat and Threads integration, page-specific conversations, and source links             |
+| Slack                      | Managed Channels SDK declaration with workspace and user allowlists                               |
+| Calls                      | WebRTC speech, delegated compute, bounded sessions, hangup, and timeline receipts                 |
+| Background work            | Scheduled server-side turns in their original conversation, with pause and retry controls         |
+| Browser                    | Separate read-only public-page service with page capture and navigation limits                    |
+| Dot computers              | Per-Dot browser profiles, files, shell, takeover, permissions, and action records through OpenBot |
+| Memory                     | User-managed preferences that permitted Dots can use                                              |
+| Deployment                 | Local Node setup and separate application/browser containers                                      |
 
-Local checks cover setup, persistence, permissions, SDK failure handling, and browser isolation. Tests use service fixtures; **live Intelligence, model, Slack, and voice verification remains pending deployment configuration**.
+Local checks cover setup, persistence, permissions, SDK failure handling, and browser isolation. Tests use service fixtures; **live Intelligence, model, Slack, voice, and Dot-computer verification remains pending deployment configuration**.
 
 This is a single-owner starting point. Shared editing, invitations, file uploads, and interactive page embeds are not included. Schedules are recurring instructions, not a complete goal or event-trigger system. Specialist Dots have separate roles and conversations; multi-Dot group conversations and automatic delegation are further work.
 

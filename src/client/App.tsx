@@ -255,9 +255,54 @@ export function App() {
     );
   const content = (
     <div className={`app template-app ${navCollapsed ? 'nav-collapsed' : ''}`}>
+      <nav className="icon-rail" aria-label="Workspace navigation">
+        <button
+          className="rail-brand"
+          aria-label="OpenDots home"
+          onClick={() => {
+            setView('chat');
+            setSelectedThread(undefined);
+          }}
+        >
+          o<span>·</span>
+        </button>
+        <button
+          aria-label={navCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+          onClick={() => setNavCollapsed(!navCollapsed)}
+        >
+          <PanelLeft size={18} />
+        </button>
+        <button
+          aria-label="New chat"
+          disabled={!configured}
+          onClick={() => void newConversation()}
+        >
+          <Plus size={19} />
+        </button>
+        <button
+          aria-label="Open Spaces"
+          onClick={() => {
+            if (workspace.spaces[0]) openPage(workspace.spaces[0].id);
+          }}
+        >
+          <Folder size={18} />
+        </button>
+        <button aria-label="Open activity" onClick={() => setView('tasks')}>
+          <Clock3 size={18} />
+        </button>
+        <button
+          className="rail-settings"
+          aria-label="Open settings"
+          onClick={() => setDialog({ type: 'settings' })}
+        >
+          <Settings2 size={18} />
+        </button>
+      </nav>
       <button
         className="mobile-menu icon-button"
         aria-label="Open navigation"
+        aria-expanded={mobile}
+        aria-controls="workspace-sidebar"
         onClick={() => setMobile(true)}
       >
         <Menu size={21} />
@@ -269,7 +314,10 @@ export function App() {
           onClick={() => setMobile(false)}
         />
       )}
-      <aside className={`sidebar ${mobile ? 'open' : ''}`}>
+      <aside
+        id="workspace-sidebar"
+        className={`sidebar ${mobile ? 'open' : ''}`}
+      >
         <button
           className="wordmark"
           onClick={() => {
@@ -285,14 +333,13 @@ export function App() {
           </span>
           OpenDots<span className="wordmark-dot">•</span>
         </button>
-        <span className="template-label">A PERSONAL AGENT TEMPLATE</span>
         <button
           className="new-chat nav-item"
           disabled={!configured}
           onClick={() => void newConversation()}
         >
           <Plus size={17} />
-          <span>New conversation</span>
+          <span>New chat</span>
         </button>
         <div className="spaces-heading nav-label">
           SPACES
@@ -453,7 +500,8 @@ export function App() {
             </button>
             <button
               className="icon-button"
-              aria-label="Show computer and source pane"
+              aria-label={pane ? 'Hide computer' : 'Show computer'}
+              aria-expanded={pane}
               onClick={() => setPane(!pane)}
             >
               <Monitor size={18} />
@@ -537,26 +585,17 @@ export function App() {
                       Edit specialist <MoreHorizontal size={14} />
                     </button>
                   </div>
-                  <div className="starter-copy">
-                    <span className="eyebrow">YOUR DAY, A LITTLE LIGHTER</span>
-                    <h1>
-                      A little dot.
-                      <br />A lot off your plate.
-                    </h1>
-                    <p>A question, a curiosity, a thing on your mind.</p>
-                  </div>
                   {!configured && (
                     <div className="setup-card">
                       <span className="setup-icon">
                         <Settings2 size={20} />
                       </span>
                       <div>
-                        <strong>Your template is ready for setup.</strong>
+                        <strong>Connect your Dot</strong>
                         <p>
-                          Add <code>{workspace.setup.missing.join(', ')}</code>{' '}
-                          on the server, then restart to start real
-                          conversations. Spaces and specialist preferences are
-                          ready to edit now.
+                          Connect your model and conversation service in
+                          Settings to start chatting. Your Spaces and Dot
+                          preferences are ready to use.
                         </p>
                         <a
                           href="https://github.com/CopilotKit/OpenDots/blob/main/docs/SETUP.md"
@@ -634,6 +673,9 @@ export function App() {
             </div>
             {pane && (
               <ResultPane
+                key={dot.id}
+                dots={workspace.dots}
+                defaultDotId={dot.id}
                 latest={capture}
                 dotState="idle"
                 onClose={() => setPane(false)}
@@ -798,6 +840,23 @@ export function App() {
               </>
             )}
           </main>
+        )}
+        {pane && view !== 'chat' && (
+          <div className="computer-overlay">
+            <ResultPane
+              key={view === 'space' ? spaceId : dot.id}
+              dots={workspace.dots}
+              defaultDotId={
+                view === 'space'
+                  ? (workspace.dots.find(
+                      (candidate) => candidate.spaceId === spaceId,
+                    )?.id ?? dot.id)
+                  : dot.id
+              }
+              dotState="idle"
+              onClose={() => setPane(false)}
+            />
+          </div>
         )}
       </div>
       {dialog && (

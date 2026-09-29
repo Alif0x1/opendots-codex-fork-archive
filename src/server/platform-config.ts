@@ -6,6 +6,10 @@ export interface PlatformConfig {
   model?: string;
   apiKey?: string;
   baseUrl: string;
+  computerSupervisorUrl?: string;
+  computerSupervisorToken?: string;
+  computerToken?: string;
+  computerNamespace?: string;
   browserUrl?: string;
   browserSecret?: string;
   voiceKey?: string;

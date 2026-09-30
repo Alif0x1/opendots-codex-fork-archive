@@ -56,7 +56,11 @@ Ask a Dot to show a draft before saving it. A CopilotKit human-in-the-loop card 
 
 A continuous conversation keeps the Dot's avatar and status above the messages, with text and call controls close at hand. Work updates, source links, and call receipts appear in the timeline; a side panel shows results or the agent's computer.
 
-Calls pair realtime speech with a separate compute agent, so the conversation can continue while longer work runs. Both use the same conversation context and tool permissions. Voice needs separate provider configuration.
+Calls pair realtime speech with a separate compute agent, so the conversation can continue while longer work runs. Both use the same conversation context and tool permissions. The call screen includes a live timer, separate user and Dot captions, microphone mute, speaker mute, and a minimized view for continuing in chat. Voice needs separate provider configuration.
+
+<img src="docs/demos/voice-call.gif" width="420" alt="A live Dot call with captions, mute controls, and a minimized chat view" />
+
+_Connect, talk, mute, minimize, and return to chat. [Watch the 15-second UI test](docs/demos/voice-call.mp4). This is a silent screen capture of a real call, with waiting time trimmed and playback accelerated._
 
 ### Slack
 
@@ -119,7 +123,7 @@ See [Setup](docs/SETUP.md) for configuration, Slack, calls, the browser service,
 | Memory                     | User-managed preferences that permitted Dots can use                                              |
 | Deployment                 | Local Node setup and separate application/browser containers                                      |
 
-Local checks cover setup, persistence, permissions, SDK failure handling, and browser isolation. Automated tests use service fixtures. **Live Intelligence, model responses, and page-context chat were verified on September 29, 2026.** Live OpenBot computer browsing, file creation, shell verification, and file persistence across stop/start were also verified locally. Slack and voice still require their own connected-service verification. See [recording notes](docs/demos/README.md) for the demonstrated flows and limits.
+Local checks cover setup, persistence, permissions, SDK failure handling, and browser isolation. Automated tests use service fixtures. **Live Intelligence, model responses, and page-context chat were verified on September 29, 2026.** Live OpenBot computer browsing, file creation, shell verification, and file persistence across stop/start were also verified locally. Live Realtime speech, call controls, and receipt persistence were verified locally on September 30, 2026. Slack and spoken compute delegation still need connected-service verification. See [recording notes](docs/demos/README.md) for the demonstrated flows and limits.
 
 This is a single-owner starting point. Shared editing, invitations, file uploads, and interactive page embeds are not included. Schedules are recurring instructions, not a complete goal or event-trigger system. Specialist Dots have separate roles and conversations; multi-Dot group conversations and automatic delegation are further work.
 

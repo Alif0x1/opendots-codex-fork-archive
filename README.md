@@ -4,7 +4,7 @@
 
 ### Your always-on AI coworkers that move between text, calls, and Slack.
 
-**An open-source template for always-on AI coworkers, each with its own computer.**
+**An open-source template for persistent AI agents, each with its own computer. Available on Web and Mobile.**
 
 
 
@@ -14,7 +14,7 @@ Built with [CopilotKit](https://github.com/CopilotKit/CopilotKit) and [AG-UI](ht
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](./LICENSE)
 ![Alpha](https://img.shields.io/badge/status-alpha-orange.svg)
 
-Clone this template and customize it however you want.
+Fully self-hostable. Clone this template and customize it however you want.
 
 [**Building on OpenDots? Meet with the CopilotKit team →**](https://www.copilotkit.ai/talk-to-an-engineer?ref=opendots_readme)
 

@@ -88,7 +88,7 @@ https://github.com/user-attachments/assets/27d03a6c-a9e0-4c29-8d96-fafe0fbae20f
 
 </td></tr></table>
 
-This 31-second, full-frame UI mock shows a request, Scout’s Block Kit result, and teammate replies. It is illustrative footage, separate from connected-service verification.
+Bring your agents into Slack with [Channels SDK](https://github.com/CopilotKit/channels-sdk). See the [managed Channels documentation](https://docs.copilotkit.ai/intelligence/channels) to connect them through CopilotKit Intelligence.
 
 ## Architecture
 

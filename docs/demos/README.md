@@ -47,7 +47,15 @@ The final recording was captured after correcting host-to-supervisor networking 
 - A saved workspace file retained identical contents across a stop/start (checked separately from the recording).
 - Browser work resumed after restart using a fresh snapshot.
 
-Slack and realtime calls are not demonstrated. Their service configuration and live checks remain separate.
+The live recordings above do not demonstrate Slack or realtime calls. Their service configuration and live checks remain separate.
+
+## Slack UI mock
+
+[Download the clean 4K Slack clip](slack-thread-raw-4k.mp4): 31 seconds, 930 frames, 30 fps, 3840×2160 H.264, silent. A request starts in a channel, Scout works and returns a Block Kit result, and teammates reply in the same thread. The UI fills the frame without surrounding branding or promotional overlays.
+
+**This clip is authored mock footage, not a connected-service recording.** Its conversation, tool progress, saved Page, teammate messages and reactions are scripted for the launch video. It provides no evidence of live Slack integration behavior.
+
+The [standalone Remotion project](../../video/slack-thread/README.md) includes the editable source, required image assets, timing guide, and commands for native 4K MP4/ProRes exports. Keep that README with editor exports so their mock provenance remains clear.
 
 ## Re-recording
 

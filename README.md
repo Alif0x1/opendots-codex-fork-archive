@@ -6,6 +6,8 @@
 
 **An open-source template for persistent AI agents, each with its own computer. Available on Web and Mobile.**
 
+**Works with any agent harness.** Agents connect over [AG-UI](https://docs.ag-ui.com/introduction), so you can keep the built-in agent or bring your own framework.
+
 Built with [CopilotKit](https://github.com/CopilotKit/CopilotKit) and [AG-UI](https://docs.ag-ui.com/introduction). · [Get started](#get-started) · [Overview](#overview) · [Architecture](#architecture) · [Status](#development-status) · [Contributing](CONTRIBUTING.md)
 
 [![CI](https://github.com/CopilotKit/OpenDots/actions/workflows/ci.yml/badge.svg)](https://github.com/CopilotKit/OpenDots/actions/workflows/ci.yml)
@@ -34,15 +36,15 @@ _Ask → browse → approve → save. A live computer view and a human review ca
 
 ## Overview
 
-OpenDots is a starting point for building your own agent workspace. Clone it, define your Dots, connect your services, and adapt the interface and tools to your needs.
+OpenDots is a starting point for building your own agent workspace. Clone it, define your agents, connect your services, and adapt the interface and tools to your needs.
 
 **A template, not a hosted product.** You run the application and configure its infrastructure. The template is in early development; the status table below distinguishes local verification from connected-service testing.
 
 ### Spaces
 
-A Space is a home for working documents. Dots appear separately in navigation and can be granted access to multiple Spaces in their settings. Each Dot has a default destination for saved pages; existing installations retain their original Space access. Browse pages in a searchable library, switch between grid and list views, and organize documents as nested subpages. Open a page in a focused visual editor with formatting, slash commands, and undo/redo. Write directly, save a conversation as a page, or ask a specialist to create and revise content.
+A Space is a home for working documents. Agents appear separately in navigation and can be granted access to multiple Spaces in their settings. Each agent has a default destination for saved pages; existing installations retain their original Space access. Browse pages in a searchable library, switch between grid and list views, and organize documents as nested subpages. Open a page in a focused visual editor with formatting, slash commands, and undo/redo. Write directly, save a conversation as a page, or ask a specialist to create and revise content.
 
-Pages stay in the local workspace database. Their conversations use CopilotKit Threads, with a separate conversation for each page and specialist. Page links connect the document workspace to Dot chat. Manual editing works before you configure conversation services. Autosave reports its progress, failed saves retain your draft, and revision checks prevent stale edits from overwriting newer content. Markdown source mode remains available.
+Pages stay in the local workspace database. Their conversations use CopilotKit Threads, with a separate conversation for each page and specialist. Page links connect the document workspace to agent chat. Manual editing works before you configure conversation services. Autosave reports its progress, failed saves retain your draft, and revision checks prevent stale edits from overwriting newer content. Markdown source mode remains available.
 
 <div align="center">
 
@@ -54,15 +56,15 @@ https://github.com/user-attachments/assets/d20c3405-4339-49e7-a799-43298728015c
 
 </div>
 
-_Open a Space, navigate to its launch brief, ask Scout about the saved page, and continue in Dot chat. This recording uses live page chat and example launch content._
+_Open a Space, navigate to its launch brief, ask Scout about the saved page, and continue in agent chat. This recording uses live page chat and example launch content._
 
-### Specialist Dots
+### Specialist agents
 
-Give each Dot a name, role, instructions, and permitted tools. A researcher can investigate a topic; a writer can turn findings into a draft. Inspect their work and control what they can do.
+Give each agent a name, role, instructions, and permitted tools. A researcher can investigate a topic; a writer can turn findings into a draft. Inspect their work and control what they can do.
 
-### Dot computers
+### Agent computers
 
-Each Dot can have its own computer, using [OpenBot](https://github.com/CopilotKit/OpenBot)'s container supervisor and computer service. Its browser profile and workspace files persist across stop/start. The Computer panel exposes browser control, human takeover, files, terminal output, and activity, with browser, file, and shell permissions set per Dot. The application keeps service credentials on the server and derives a different computer credential for each Dot.
+Each agent can have its own computer, using [OpenBot](https://github.com/CopilotKit/OpenBot)'s container supervisor and computer service. Its browser profile and workspace files persist across stop/start. The Computer panel exposes browser control, human takeover, files, terminal output, and activity, with browser, file, and shell permissions set per agent. The application keeps service credentials on the server and derives a different computer credential for each agent.
 
 See [Computer setup](docs/COMPUTERS.md) to build the pinned services and connect your deployment. Computer tools require those services; an unconfigured template does not execute commands on your host.
 
@@ -80,13 +82,13 @@ _Ask Scout to open a website, summarize it, save notes, and verify the file. Eve
 
 ### Review before saving
 
-Ask a Dot to show a draft before saving it. A CopilotKit human-in-the-loop card pauses the conversation for **Approve & save** or **Decline**. Approval creates the page in an authorized Space and returns a link; retries recover the same saved page. The agent continues after your decision.
+Ask an agent to show a draft before saving it. A CopilotKit human-in-the-loop card pauses the conversation for **Approve & save** or **Decline**. Approval creates the page in an authorized Space and returns a link; retries recover the same saved page. The agent continues after your decision.
 
 ### Text and calls
 
-A continuous conversation keeps the Dot's avatar and status above the messages, with text and call controls close at hand. Work updates, source links, and call receipts appear in the timeline; a side panel shows results or the agent's computer.
+A continuous conversation keeps the agent's avatar and status above the messages, with text and call controls close at hand. Work updates, source links, and call receipts appear in the timeline; a side panel shows results or the agent's computer.
 
-Calls pair realtime speech with a separate compute agent, so the conversation can continue while longer work runs. Both use the same conversation context and tool permissions. The call screen includes a live timer, separate user and Dot captions, microphone mute, speaker mute, and a minimized view for continuing in chat. Voice needs separate provider configuration.
+Calls pair realtime speech with a separate compute agent, so the conversation can continue while longer work runs. Both use the same conversation context and tool permissions. The call screen includes a live timer, separate user and agent captions, microphone mute, speaker mute, and a minimized view for continuing in chat. Voice needs separate provider configuration.
 
 <div align="center">
 
@@ -102,7 +104,7 @@ _Connect, talk, mute, minimize, and return to chat. This is a silent screen capt
 
 ### Slack
 
-Mention a Dot through a managed Slack connection using Channels SDK, then continue in its thread. The integration follows [OpenTag](https://github.com/CopilotKit/OpenTag), with an explicit workspace/user allowlist and a selected specialist. See [Slack setup](docs/SETUP.md#slack) to connect your deployment.
+Mention an agent through a managed Slack connection using Channels SDK, then continue in its thread. The integration follows [OpenTag](https://github.com/CopilotKit/OpenTag), with an explicit workspace/user allowlist and a selected specialist. See [Slack setup](docs/SETUP.md#slack) to connect your deployment.
 
 <div align="center">
 
@@ -126,7 +128,7 @@ The template uses CopilotKit's React SDK and runtime, Intelligence for durable T
 
 ```mermaid
 flowchart TB
-  Web["Web app: pages, Spaces, Dots, chat"] -->|AG-UI| Runtime[CopilotKit runtime]
+  Web["Web app: pages, Spaces, agents, chat"] -->|AG-UI| Runtime[CopilotKit runtime]
   Slack[Slack] <--> Managed[Managed channel connection]
   Managed <--> Channels[Channels SDK]
   Channels --> Agents[Specialist compute agents]
@@ -139,7 +141,7 @@ flowchart TB
   Agents --> Controls[Tool permissions]
   Controls --> Computer[Isolated browser / workspace]
   Agents --> Jobs[Background work]
-  Runtime --> Metadata[(Pages, Spaces, Dots, work metadata)]
+  Runtime --> Metadata[(Pages, Spaces, agents, work metadata)]
 ```
 
 You configure the Intelligence project, model provider, and channel connection for your deployment; calls also need a speech provider. Credentials stay on the server. Missing configuration should produce a clear setup state, and test fixtures should remain visibly separate from live integrations.
@@ -158,28 +160,28 @@ cp .env.example .env
 npm run dev
 ```
 
-Open **http://127.0.0.1:5173**. You can create Spaces, write pages, and configure Dots before connecting services. Add your conversation and model settings to `.env` to start chatting.
+Open **http://127.0.0.1:5173**. You can create Spaces, write pages, and configure agents before connecting services. Add your conversation and model settings to `.env` to start chatting.
 
 See [Setup](docs/SETUP.md) for configuration, Slack, calls, the browser service, and Docker.
 
 ## Development status
 
-| Area                       | Included                                                                                          |
-| -------------------------- | ------------------------------------------------------------------------------------------------- |
-| Spaces and Specialist Dots | Saved names, role instructions, and per-Dot research and memory permissions                       |
-| Pages                      | Searchable library, visual editor, slash commands, autosave, and revision checks                  |
-| Conversations              | React SDK chat and Threads integration, page-specific conversations, and source links             |
-| Slack                      | Managed Channels SDK declaration with workspace and user allowlists                               |
-| Calls                      | WebRTC speech, delegated compute, bounded sessions, hangup, and timeline receipts                 |
-| Background work            | Scheduled server-side turns in their original conversation, with pause and retry controls         |
-| Browser                    | Separate read-only public-page service with page capture and navigation limits                    |
-| Dot computers              | Per-Dot browser profiles, files, shell, takeover, permissions, and action records through OpenBot |
-| Memory                     | User-managed preferences that permitted Dots can use                                              |
-| Deployment                 | Local Node setup and separate application/browser containers                                      |
+| Area                         | Included                                                                                            |
+| ---------------------------- | --------------------------------------------------------------------------------------------------- |
+| Spaces and specialist agents | Saved names, role instructions, and per-agent research and memory permissions                       |
+| Pages                        | Searchable library, visual editor, slash commands, autosave, and revision checks                    |
+| Conversations                | React SDK chat and Threads integration, page-specific conversations, and source links               |
+| Slack                        | Managed Channels SDK declaration with workspace and user allowlists                                 |
+| Calls                        | WebRTC speech, delegated compute, bounded sessions, hangup, and timeline receipts                   |
+| Background work              | Scheduled server-side turns in their original conversation, with pause and retry controls           |
+| Browser                      | Separate read-only public-page service with page capture and navigation limits                      |
+| Agent computers              | Per-agent browser profiles, files, shell, takeover, permissions, and action records through OpenBot |
+| Memory                       | User-managed preferences that permitted agents can use                                              |
+| Deployment                   | Local Node setup and separate application/browser containers                                        |
 
 Local checks cover setup, persistence, permissions, SDK failure handling, and browser isolation. Automated tests use service fixtures. **Live Intelligence, model responses, and page-context chat were verified on September 29, 2026.** Live OpenBot computer browsing, file creation, shell verification, and file persistence across stop/start were also verified locally. Live Realtime speech, call controls, and receipt persistence were verified locally on September 30, 2026. Slack and spoken compute delegation still need connected-service verification. See [recording notes](docs/demos/README.md) for the demonstrated flows and limits.
 
-This is a single-owner starting point. Shared editing, invitations, file uploads, and interactive page embeds are not included. Schedules are recurring instructions, not a complete goal or event-trigger system. Specialist Dots have separate roles and conversations; multi-Dot group conversations and automatic delegation are further work.
+This is a single-owner starting point. Shared editing, invitations, file uploads, and interactive page embeds are not included. Schedules are recurring instructions, not a complete goal or event-trigger system. Specialist agents have separate roles and conversations; multi-agent group conversations and automatic delegation are further work.
 
 ### Extending the template
 

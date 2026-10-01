@@ -6,8 +6,6 @@
 
 **An open-source template for persistent AI agents, each with its own computer. Available on Web and Mobile.**
 
-
-
 Built with [CopilotKit](https://github.com/CopilotKit/CopilotKit) and [AG-UI](https://docs.ag-ui.com/introduction). · [Get started](#get-started) · [Overview](#overview) · [Architecture](#architecture) · [Status](#development-status) · [Contributing](CONTRIBUTING.md)
 
 [![CI](https://github.com/CopilotKit/OpenDots/actions/workflows/ci.yml/badge.svg)](https://github.com/CopilotKit/OpenDots/actions/workflows/ci.yml)
@@ -207,5 +205,3 @@ See [Contributing](CONTRIBUTING.md) for development guidance and [Security](SECU
 ## License
 
 [MIT](LICENSE).
-
-

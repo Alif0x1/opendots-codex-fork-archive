@@ -14,9 +14,9 @@ Built with [CopilotKit](https://github.com/CopilotKit/CopilotKit) and [AG-UI](ht
 
 ---
 
-[![▶ Watch: chat → computer → human review → Space page (23 seconds)](docs/demos/chat-to-space-poster.jpg)](docs/demos/chat-to-space.mp4)
+https://github.com/user-attachments/assets/c342acde-4557-4aa0-ae6e-1b8e4bea5046
 
-_Ask → browse → approve → save. A live computer view and a human review card appear right in chat, then the approved draft becomes an editable Space page. [Watch the 23-second video](docs/demos/chat-to-space.mp4). Enlarged for readability; idle time is trimmed and playback is accelerated._
+_Ask → browse → approve → save. A live computer view and a human review card appear right in chat, then the approved draft becomes an editable Space page. Enlarged for readability; idle time is trimmed and playback is accelerated._
 
 ## Overview
 
@@ -30,9 +30,9 @@ A Space is a home for working documents. Dots appear separately in navigation an
 
 Pages stay in the local workspace database. Their conversations use CopilotKit Threads, with a separate conversation for each page and specialist. Page links connect the document workspace to Dot chat. Manual editing works before you configure conversation services. Autosave reports its progress, failed saves retain your draft, and revision checks prevent stale edits from overwriting newer content. Markdown source mode remains available.
 
-[![▶ Watch: Spaces and page chat](docs/demos/spaces-page-chat-poster.jpg)](docs/demos/spaces-page-chat.mp4)
+https://github.com/user-attachments/assets/d20c3405-4339-49e7-a799-43298728015c
 
-_Open a Space, navigate to its launch brief, ask Scout about the saved page, and continue in Dot chat. This recording uses live page chat and example launch content. [Watch the MP4](docs/demos/spaces-page-chat.mp4)._
+_Open a Space, navigate to its launch brief, ask Scout about the saved page, and continue in Dot chat. This recording uses live page chat and example launch content._
 
 ### Specialist Dots
 
@@ -44,9 +44,9 @@ Each Dot can have its own computer, using [OpenBot](https://github.com/CopilotKi
 
 See [Computer setup](docs/COMPUTERS.md) to build the pinned services and connect your deployment. Computer tools require those services; an unconfigured template does not execute commands on your host.
 
-[![▶ Watch: computer use through natural-language chat](docs/demos/computer-chat-poster.jpg)](docs/demos/computer-chat.mp4)
+https://github.com/user-attachments/assets/30b691c3-0f66-4964-9fdb-67d4feab5568
 
-_Ask Scout to open a website, summarize it, save notes, and verify the file. Every computer action in this demo is requested through chat; CopilotKit tool renderers show the live browser, saved file, and terminal output inline. [Watch the MP4](docs/demos/computer-chat.mp4)._
+_Ask Scout to open a website, summarize it, save notes, and verify the file. Every computer action in this demo is requested through chat; CopilotKit tool renderers show the live browser, saved file, and terminal output inline._
 
 ### Review before saving
 
@@ -58,15 +58,17 @@ A continuous conversation keeps the Dot's avatar and status above the messages, 
 
 Calls pair realtime speech with a separate compute agent, so the conversation can continue while longer work runs. Both use the same conversation context and tool permissions. The call screen includes a live timer, separate user and Dot captions, microphone mute, speaker mute, and a minimized view for continuing in chat. Voice needs separate provider configuration.
 
-[![▶ Watch: a live Dot call, captions, and call controls (15 seconds)](docs/demos/voice-call-poster.jpg)](docs/demos/voice-call.mp4)
+https://github.com/user-attachments/assets/3c06cf71-39ed-4e2b-b846-5463b2722389
 
-_Connect, talk, mute, minimize, and return to chat. [Watch the 15-second UI test](docs/demos/voice-call.mp4). This is a silent screen capture of a real call, with waiting time trimmed and playback accelerated._
+_Connect, talk, mute, minimize, and return to chat. This is a silent screen capture of a real call, with waiting time trimmed and playback accelerated._
 
 ### Slack
 
 Mention a Dot through a managed Slack connection using Channels SDK, then continue in its thread. The integration follows [OpenTag](https://github.com/CopilotKit/OpenTag), with an explicit workspace/user allowlist and a selected specialist. See [Slack setup](docs/SETUP.md#slack) to connect your deployment.
 
-[Watch the 4K Slack thread demo](docs/demos/slack-thread-raw-4k.mp4). This 31-second, full-frame UI mock shows a request, Scout’s Block Kit result, and teammate replies. It is illustrative footage, separate from connected-service verification.
+https://github.com/user-attachments/assets/27d03a6c-a9e0-4c29-8d96-fafe0fbae20f
+
+This 31-second, full-frame UI mock shows a request, Scout’s Block Kit result, and teammate replies. It is illustrative footage, separate from connected-service verification.
 
 ## Architecture
 

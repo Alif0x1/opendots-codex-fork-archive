@@ -164,19 +164,19 @@ See [Setup](docs/SETUP.md) for configuration, Slack, calls, the browser service,
 
 ## Features
 
-| Area                       | Included                                                                                          |
-| -------------------------- | ------------------------------------------------------------------------------------------------- |
-| Spaces and Specialist Dots | Saved names, role instructions, and per-Dot research and memory permissions                       |
-| Pages                      | Searchable library, visual editor, slash commands, autosave, and revision checks                  |
-| Conversations              | React SDK chat and Threads integration, page-specific conversations, and source links             |
-| Slack                      | Managed Channels SDK declaration with workspace and user allowlists                               |
-| Calls                      | WebRTC speech, delegated compute, bounded sessions, hangup, and timeline receipts                 |
-| Background work            | Scheduled server-side turns in their original conversation, with pause and retry controls         |
-| Browser                    | Separate read-only public-page service with page capture and navigation limits                    |
-| Dot computers              | Per-Dot browser profiles, files, shell, takeover, permissions, and action records through OpenBot |
-| Memory                     | User-managed preferences that permitted Dots can use                                              |
+| Area                       | Included                                                                                                                                |
+| -------------------------- | --------------------------------------------------------------------------------------------------------------------------------------- |
+| Spaces and Specialist Dots | Saved names, role instructions, and per-Dot research and memory permissions                                                             |
+| Pages                      | Searchable library, visual editor, slash commands, autosave, and revision checks                                                        |
+| Conversations              | React SDK chat and Threads integration, page-specific conversations, and source links                                                   |
+| Slack                      | Managed Channels SDK declaration with workspace and user allowlists                                                                     |
+| Calls                      | WebRTC speech, delegated compute, bounded sessions, hangup, and timeline receipts                                                       |
+| Background work            | Scheduled server-side turns in their original conversation, with pause and retry controls                                               |
+| Browser                    | Separate read-only public-page service with page capture and navigation limits                                                          |
+| Dot computers              | Per-Dot browser profiles, files, shell, takeover, permissions, and action records through OpenBot                                       |
+| Memory                     | User-managed preferences that permitted Dots can use                                                                                    |
 | Automatic Learning         | Per-Dot Learning containers, conversation evidence routing, and published-skill delivery; see [setup](docs/SETUP.md#automatic-learning) |
-| Deployment                 | Local Node setup and separate application/browser containers                                      |
+| Deployment                 | Local Node setup and separate application/browser containers                                                                            |
 
 Local checks cover setup, persistence, permissions, SDK failure handling, and browser isolation. Automated tests use service fixtures. **Live Intelligence, model responses, and page-context chat were verified on September 29, 2026.** Live OpenBot computer browsing, file creation, shell verification, and file persistence across stop/start were also verified locally. Live Realtime speech, call controls, and receipt persistence were verified locally on September 30, 2026. Slack and spoken compute delegation still need connected-service verification. See [recording notes](docs/demos/README.md) for the demonstrated flows and limits.
 

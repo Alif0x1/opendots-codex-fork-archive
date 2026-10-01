@@ -62,7 +62,7 @@ Calls pair realtime speech with a separate compute agent, so the conversation ca
 
 Mention a Dot through a managed Slack connection using Channels SDK, then continue in its thread. The integration follows [OpenTag](https://github.com/CopilotKit/OpenTag), with an explicit workspace/user allowlist and a selected specialist. See [Slack setup](docs/SETUP.md#slack) to connect your deployment.
 
-[Watch the 4K Slack thread demo](docs/demos/slack-thread-raw-4k.mp4) or [edit its Remotion source](video/slack-thread/README.md). This 31-second, full-frame UI mock shows a request, Scout’s Block Kit result, and teammate replies. It is illustrative footage, separate from connected-service verification.
+[Watch the 4K Slack thread demo](docs/demos/slack-thread-raw-4k.mp4). This 31-second, full-frame UI mock shows a request, Scout’s Block Kit result, and teammate replies. It is illustrative footage, separate from connected-service verification.
 
 ## Architecture
 

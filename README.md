@@ -2,11 +2,19 @@
 
 # OpenDots
 
+[![CI](https://github.com/CopilotKit/OpenDots/actions/workflows/ci.yml/badge.svg)](https://github.com/CopilotKit/OpenDots/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](./LICENSE)
+![Alpha](https://img.shields.io/badge/status-alpha-orange.svg)
+
 ### Your always-on AI coworkers that move between text, calls, and Slack.
 
 **An open-source template for always-on AI coworkers, each with its own computer.**
 
 Built with [CopilotKit](https://github.com/CopilotKit/CopilotKit) and [AG-UI](https://docs.ag-ui.com/introduction).
+
+Clone this template and customize it however you want.
+
+[**Building on OpenDots? Meet with the CopilotKit team →**](https://www.copilotkit.ai/talk-to-an-engineer)
 
 [Talk to our engineers](https://www.copilotkit.ai/talk-to-an-engineer?ref=opendots_readme) · [Get started](#get-started) · [Overview](#overview) · [Architecture](#architecture) · [Status](#development-status) · [Contributing](CONTRIBUTING.md)
 

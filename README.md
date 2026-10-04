@@ -2,17 +2,17 @@
 
 # OpenDots
 
-### Always-on AI coworkers that move between text, calls, and Slack.
+### A self-hosted desktop AI workspace for your own Codex CLI account.
 
-**An open-source template for persistent AI agents, each with its own computer. Available on Web and Mobile.**
+**Run a personal AI workspace with your signed-in OpenAI Codex CLI account. Each user keeps their Codex session on their own computer.**
 
-Built with [CopilotKit](https://github.com/CopilotKit/CopilotKit) and [AG-UI](https://docs.ag-ui.com/introduction). · [Get started](#get-started) · [Overview](#overview) · [Architecture](#architecture) · [Features](#features) · [Contributing](CONTRIBUTING.md)
+OpenDots is an open-source, self-hosted AI agent workspace built with [CopilotKit](https://github.com/CopilotKit/CopilotKit) and [AG-UI](https://docs.ag-ui.com/introduction). This version connects locally to Codex CLI, so each person runs their own server and keeps Codex credentials in their desktop profile. · [Get started](#get-started) · [Connect Codex](docs/SETUP.md#use-your-local-codex-account) · [Features](#features) · [Contributing](CONTRIBUTING.md)
 
 [![CI](https://github.com/CopilotKit/OpenDots/actions/workflows/ci.yml/badge.svg)](https://github.com/CopilotKit/OpenDots/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](./LICENSE)
 ![Alpha](https://img.shields.io/badge/status-alpha-orange.svg)
 
-Fully self-hostable. Clone this template and customize it however you want.
+Self-host it on the same desktop as Codex CLI. Your Codex credentials stay in Codex's local sign-in profile; OpenDots does not ask you to paste or upload a token.
 
 [**Building on OpenDots? Meet with the CopilotKit team →**](https://www.copilotkit.ai/talk-to-an-engineer?ref=opendots_readme)
 

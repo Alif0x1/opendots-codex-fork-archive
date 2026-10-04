@@ -160,7 +160,7 @@ cp .env.example .env
 npm run dev
 ```
 
-Open **http://127.0.0.1:5173**. You can create Spaces, write pages, and configure Dots before connecting services. Add your conversation and model settings to `.env` to start chatting.
+Open **http://127.0.0.1:5173**. You can create Spaces, write pages, and configure Dots before connecting services. To chat using the Codex account on this desktop, install and sign in to Codex CLI, then choose **Connect Codex** in Settings; see [local Codex setup](docs/SETUP.md#use-your-local-codex-account). You can also configure a server-side conversation and model provider in `.env`.
 
 See [Setup](docs/SETUP.md) for configuration, Slack, calls, the browser service, and Docker.
 
@@ -171,6 +171,7 @@ See [Setup](docs/SETUP.md) for configuration, Slack, calls, the browser service,
 | Spaces and Specialist Dots | Saved names, role instructions, and per-Dot research and memory permissions                                                             |
 | Pages                      | Searchable library, visual editor, slash commands, autosave, and revision checks                                                        |
 | Conversations              | React SDK chat and Threads integration, page-specific conversations, and source links                                                   |
+| Local Codex account        | Connect the Codex CLI session on this desktop; each self-hosted user runs their own local server and account                            |
 | Slack                      | Managed Channels SDK declaration with workspace and user allowlists                                                                     |
 | Calls                      | WebRTC speech, delegated compute, bounded sessions, hangup, and timeline receipts                                                       |
 | Background work            | Scheduled server-side turns in their original conversation, with pause and retry controls                                               |
